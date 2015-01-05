@@ -1,5 +1,5 @@
 /*
-Óï·¨·ÖÎö
+è¯­æ³•åˆ†æå¤´æ–‡ä»¶
 */
 #ifndef PARSERHEAD_H_
 #define PARSERHEAD_H_
@@ -7,9 +7,9 @@
 #include <string>
 using namespace std;
 /*
-±äÁ¿
+å˜é‡
 */
-//±äÁ¿ÀàĞÍ
+//å˜é‡ç±»å‹
 typedef enum
 {
 	Boolean_value = 1,
@@ -18,41 +18,41 @@ typedef enum
 	String_value,
 	NULL_value
 }Value_type;
-//±äÁ¿µÄ½á¹¹Ìå
+//å˜é‡çš„ç»“æ„ä½“
 struct Variable_
 {
-	Value_type type; //±äÁ¿µÄÀàĞÍ
+	Value_type type; //å˜é‡çš„ç±»å‹
 	union
 	{
 		bool boolean_value;
 		int int_vlaue;
 		double double_value;
-		string *string_value; //×Ö·û´®Öµ
+		string *string_value; //å­—ç¬¦ä¸²å€¼
 	}u;
 };
-//È«¾Ö±äÁ¿Á´±í
+//å…¨å±€å˜é‡é“¾è¡¨
 struct Variable_tag
 {
-	string name; //±äÁ¿µÄÃû×Ö
-	Variable_ value;//±äÁ¿µÄÖµ
-	Variable_tag *next;//ÏÂÒ»¸ö±äÁ¿
+	string name; //å˜é‡çš„åå­—
+	Variable_ value;//å˜é‡çš„å€¼
+	Variable_tag *next;//ä¸‹ä¸€ä¸ªå˜é‡
 };
 /*
-±í´ïÊ½
+è¡¨è¾¾å¼
 */
-//ËùÓĞµÄ±í´ïÊ½ÀàĞÍµÄÃ¶¾Ù
+//æ‰€æœ‰çš„è¡¨è¾¾å¼ç±»å‹çš„æšä¸¾
 typedef enum {
-	BOOLEAN_EXPRESSION = 1, //boolĞÍ³£Á¿
-	INT_EXPRESSION,   //intĞÍ³£Á¿
-	DOUBLE_EXPRESSION,//doubleĞÍ³£Á¿
-	STRING_EXPRESSION,//×Ö·û´®ĞÍ³£Á¿
-	IDENTIFIER_EXPRESSION,//±äÁ¿
-	ASSIGN_EXPRESSION,//¸³Öµ±í´ïÊ½
-	ADD_EXPRESSION,//Ïà¼Ó±í´ïÊ½
-	SUB_EXPRESSION,//¼õ·¨±í´ïÊ½
-	MUL_EXPRESSION,//³Ë·¨±í´ïÊ½
-	DIV_EXPRESSION,//³ı·¨±í´ïÊ½
-	MOD_EXPRESSION,//ÇóÓà±í´ïÊ½
+	BOOLEAN_EXPRESSION = 1, //boolå‹å¸¸é‡
+	INT_EXPRESSION,   //intå‹å¸¸é‡
+	DOUBLE_EXPRESSION,//doubleå‹å¸¸é‡
+	STRING_EXPRESSION,//å­—ç¬¦ä¸²å‹å¸¸é‡
+	IDENTIFIER_EXPRESSION,//å˜é‡
+	ASSIGN_EXPRESSION,//èµ‹å€¼è¡¨è¾¾å¼
+	ADD_EXPRESSION,//ç›¸åŠ è¡¨è¾¾å¼
+	SUB_EXPRESSION,//å‡æ³•è¡¨è¾¾å¼
+	MUL_EXPRESSION,//ä¹˜æ³•è¡¨è¾¾å¼
+	DIV_EXPRESSION,//é™¤æ³•è¡¨è¾¾å¼
+	MOD_EXPRESSION,//æ±‚ä½™è¡¨è¾¾å¼
 	EQ_EXPRESSION,//==
 	NE_EXPRESSION,//!=
 	GT_EXPRESSION,//>
@@ -61,43 +61,28 @@ typedef enum {
 	LE_EXPRESSION,//<=
 	LOGICAL_AND_EXPRESSION,//&&
 	LOGICAL_OR_EXPRESSION,//||
-	FUNCTION_CALL_EXPRESSION,//º¯Êıµ÷ÓÃ±í´ïÊ½
+	FUNCTION_CALL_EXPRESSION,//å‡½æ•°è°ƒç”¨è¡¨è¾¾å¼
 	MINUS_EXPRESSION,
 	NULL_EXPRESSION,
-	EXPRESSION_TYPE_COUNT_PLUS_1
+	EXPRESSION_TYPE_COUNT_PLUS_1,
+	ASSIGN_EXPRESSION  //èµ‹å€¼è¡¨è¾¾å¼
+	//BOOLEAN_EXPRESSION	Bool_expression; //boolå‹å¸¸é‡
+	//ADD_EXPRESSION		Add_expreesion; //ç›¸åŠ è¡¨è¾¾å¼
+	//SUB_EXPRESSION	Sub_expreesion;//å‡æ³•è¡¨è¾¾å¼
+	//MUL_EXPRESSION	Mul_expreesion;	//ä¹˜æ³•è¡¨è¾¾å¼
+	//DIV_EXPRESSION	Div_expreesion;//é™¤æ³•è¡¨è¾¾å¼
+	//MOD_EXPRESSION  Mod_expreesion;//æ±‚ä½™è¡¨è¾¾å¼
+	//FUNCTION_CALL_EXPRESSION,//å‡½æ•°è°ƒç”¨è¡¨è¾¾å¼
 } ExpressionType;
-//Óï¾ä±í´ïÊ½Ê÷µÄ½áµãµÄÀàĞÍÃ¶¾Ù
+//è¯­å¥è¡¨è¾¾å¼æ ‘çš„ç»“ç‚¹çš„ç±»å‹æšä¸¾
 typedef enum
 {
-	Variable = 1, //½ÚµãÊÇ±äÁ¿
-	Number,//½ÚµãÊÇÊı×Ö
-	Sign,//½ÚµãÊÇ·ûºÅ
+	Variable = 1, //èŠ‚ç‚¹æ˜¯å˜é‡
+	Number,//èŠ‚ç‚¹æ˜¯æ•°å­—
+	Sign,//èŠ‚ç‚¹æ˜¯ç¬¦å·
 }Statementtype;
-//Óï¾ä±í´ïÊ½µÄÊ÷ĞÎ½á¹¹
-struct  StatementTree
-{
-	Statementtype type;
-	union
-	{
-		int number;
-		Variable_ Variable;
-		char *sign;
-	}u;
-	StatementTree *left;
-	StatementTree *right;
-};
-//Óï¾ä½á¹¹Ìå
-struct Statementlink
-{
-	ExpressionType type;//Óï¾äÀàĞÍ
-	StatementTree * Expreesion_statement;//Óï¾ä·ÖÎö½á¹ûÊ÷
-};
-//Óï¾äÁ´±í
-struct StatementList {
-	Statementlink  *statement;
-	struct StatementList    *next;
-};
-//ËãÊõ±í´ïÊ½µÄÊ÷½á¹¹
+
+//ç®—æœ¯è¡¨è¾¾å¼çš„æ ‘ç»“æ„
 struct Binary_Tree
 {
 	char data;
@@ -105,9 +90,9 @@ struct Binary_Tree
 	Binary_Tree *right;
 };
 /*
-ÅĞ¶ÏÌõ¼ş±í´ïÊ½
+åˆ¤æ–­æ¡ä»¶è¡¨è¾¾å¼
 */
-//ÅĞ¶ÏÌõ¼ş±í´ïÊ½Óï¾ä½á¹¹Ìå
+//åˆ¤æ–­æ¡ä»¶è¡¨è¾¾å¼è¯­å¥ç»“æ„ä½“
 struct Expression_tag {
 	ExpressionType type;
 	int line_number;
@@ -125,68 +110,69 @@ struct Expression_tag {
 		*/
 	} u;
 };
-//ÅĞ¶Ï±í´ïÊ½µÄÓï·¨·ÖÎöÊ÷µÄ½áµãÀàĞÍ
+//åˆ¤æ–­è¡¨è¾¾å¼çš„è¯­æ³•åˆ†ææ ‘çš„ç»“ç‚¹ç±»å‹
 typedef enum
 {
 	charSign = 1,
 	judge_Number,
 	Bool
 }Tree_Judge_Type;
-//¹¹½¨ÅĞ¶Ï±í´ïÊ½µÄÓï·¨·ÖÎöÊ÷
+//æ„å»ºåˆ¤æ–­è¡¨è¾¾å¼çš„è¯­æ³•åˆ†ææ ‘
 struct Tree_Judge
 {
 	Tree_Judge_Type type;
 	union
 	{
-		char* sign;		//½ÚµãÊÇÔËËã·û
-		int data;	//½ÚµãÊÇÊıÖµ
-		bool bool_output;//×óÓÒ×ÓÊ÷µÄ±È½Ï½á¹û
+		char* sign;		//èŠ‚ç‚¹æ˜¯è¿ç®—ç¬¦
+		int data;	//èŠ‚ç‚¹æ˜¯æ•°å€¼
+		bool bool_output;//å·¦å³å­æ ‘çš„æ¯”è¾ƒç»“æœ
 	}u;
 	Tree_Judge *left;
 	Tree_Judge *right;
 };
-//¸³Öµ±í´ïÊ½µÄÊ÷ĞÎ½á¹¹
+//èµ‹å€¼è¡¨è¾¾å¼çš„æ ‘å½¢ç»“æ„
 struct Assign_Tree
 {
 	Binary_Tree * right;
 	Variable_ left;
 };
 /*
-Óï¾ä¿é
+		è¯­å¥å—Block
 */
-//Óï¾ä¿é½á¹¹Ìå
+//è¯­å¥å—ç»“æ„ä½“
 struct Block
 {
-	StatementList *statementlist;
-
-	union
-	{
-		//ASSIGN_EXPRESSION	Assign_expression;//¸³Öµ±í´ïÊ½
-		//BOOLEAN_EXPRESSION	Bool_expression; //boolĞÍ³£Á¿
-
-		//ADD_EXPRESSION		Add_expreesion; //Ïà¼Ó±í´ïÊ½
-		//SUB_EXPRESSION	Sub_expreesion;//¼õ·¨±í´ïÊ½
-		//MUL_EXPRESSION	Mul_expreesion;	//³Ë·¨±í´ïÊ½
-		//DIV_EXPRESSION	Div_expreesion;//³ı·¨±í´ïÊ½
-		//MOD_EXPRESSION  Mod_expreesion;//ÇóÓà±í´ïÊ½
-		//FUNCTION_CALL_EXPRESSION,//º¯Êıµ÷ÓÃ±í´ïÊ½
-	}u;
+	StatementLink *statementlist;
 };
+//è¯­å¥ç»“æ„ä½“
+struct StatementLink
+{
+	ExpressionType type;//è¯­å¥ç±»å‹
+	Block_Token * head;//é“¾è¡¨
+
+};
+//è¯­å¥å—å­—ç¬¦æµé“¾è¡¨
+struct Block_Token
+{
+	Token This;
+	Block_Token *next;
+};
+
 /*
-¹Ø¼ü×Ö
+		å…³é”®å­—
 */
-//¹Ø¼ü×ÖÓï¾äÀàĞÍ
+//å…³é”®å­—è¯­å¥ç±»å‹
 typedef enum
 {
 	WHILE_STATEMENT
-}StatementType;
-//whileÓï¾äµÄ½á¹¹
+}KeyStatementType;
+//whileè¯­å¥çš„ç»“æ„
 struct WhileStatement
 {
-	Expression_tag *condition;//Ìõ¼ş±í´ïÊ½
-	Block* block; //¿ÉÖ´ĞĞ¿é
+	Expression_tag *condition;//æ¡ä»¶è¡¨è¾¾å¼
+	Block* block; //å¯æ‰§è¡Œå—
 };
-//¹Ø¼ü×ÖÓï¾ä½á¹¹Ìå
+//å…³é”®å­—è¯­å¥ç»“æ„ä½“
 struct Statement_tag
 {
 	StatementType type;
