@@ -11,7 +11,7 @@ Lexer Lexer_out;//词法分析的结果
 Variable_tag *Search(string text, Variable_tag *First)
 {
 	Variable_tag *test = First->next;
-	while (test!= NULL)
+	while (test != NULL)
 	{
 		if (test->name == text)
 			return test;
@@ -21,7 +21,7 @@ Variable_tag *Search(string text, Variable_tag *First)
 bool isVariable(string Text, Variable_tag *First)
 {
 	Variable_tag *test = First;
-	while (test!= NULL)
+	while (test != NULL)
 	{
 		if (test->name == Text)
 			return true;
@@ -87,7 +87,7 @@ int Judeg_Variable(Variable_tag *First)
 		return number;
 	}
 }
-int Judeg_Variable(Variable_tag *First,string search)//重载函数 Judeg_Variable,传入变量的字符值，寻找变量的值
+int Judeg_Variable(Variable_tag *First, string search)//重载函数 Judeg_Variable,传入变量的字符值，寻找变量的值
 {
 	if (isVariable(search, First))
 	{
@@ -97,7 +97,7 @@ int Judeg_Variable(Variable_tag *First,string search)//重载函数 Judeg_Variab
 	}
 }
 /*
-		算术表达式
+算术表达式
 */
 //算术表达式的语法树
 int i, sum = 0;
@@ -247,33 +247,35 @@ int BinaryParse()
 	return s.top();
 }
 /*
-		条件判断表达式
+条件判断表达式
 */
 /*
 判断表达式的语法分析树是否为真
 根据符号的优先级类比算数运算符进去比较
 */
-struct Expreesion_Node//表达式字符流结构体
+//判断表达式字符流链表结构体
+struct Expreesion_Node
 {
 	bool statue;
 	Token This;
 	Expreesion_Node *next;
 };
 //判断表达式中<,>,<=,>=1级运算符
-Tree_Judge* G_L_Expreesion(Variable_tag *First, Expreesion_Node *Bool_Expreesion)
+Tree_Judge* G_L_Expreesion(Variable_tag *First, Expreesion_Node *&Bool_Expreesion)
 {
 	int number;
 	Tree_Judge *L = new Tree_Judge;
-	string test = Bool_Expreesion->next->This.gettext();
-	if (isVariable(test,First))//如果是变量
+	string test =Bool_Expreesion->next->This.gettext();
+	if (isVariable(test, First))//如果是变量
 	{
 		number = Judeg_Variable(First, test);
 
 	}
 	else
 	{
-		number = Bool_Expreesion->This.getnumber();
+		number = Bool_Expreesion->next->This.getnumber();
 	}
+	Bool_Expreesion = Bool_Expreesion->next;
 	L->left = new Tree_Judge;
 	L->right = new Tree_Judge;
 	L->left->u.data = number;
@@ -282,10 +284,11 @@ Tree_Judge* G_L_Expreesion(Variable_tag *First, Expreesion_Node *Bool_Expreesion
 	{
 		char *c;
 		const int len = test.length();
-		c= new char[len + 1];
+		c = new char[len + 1];
 		strcpy(c, test.c_str());
 		L->u.sign = c;
-		test = Bool_Expreesion->This.gettext();
+		Bool_Expreesion = Bool_Expreesion->next;
+		test = Bool_Expreesion->next->This.gettext();
 		if (isVariable(test, First))//如果是变量
 		{
 
@@ -293,8 +296,9 @@ Tree_Judge* G_L_Expreesion(Variable_tag *First, Expreesion_Node *Bool_Expreesion
 		}
 		else
 		{
-			number = Bool_Expreesion->This.getnumber();
+			number = Bool_Expreesion->next->This.getnumber();
 		}
+		Bool_Expreesion = Bool_Expreesion->next;
 		L->right->u.data = number;
 	}
 	L->right->right = NULL;
@@ -305,28 +309,29 @@ Tree_Judge* G_L_Expreesion(Variable_tag *First, Expreesion_Node *Bool_Expreesion
 
 }
 //判断表达式中&&2级运算符
-Tree_Judge * AND_Expreesion(Variable_tag *First, Expreesion_Node *Bool_Expreesion)
+Tree_Judge * AND_Expreesion(Variable_tag *First, Expreesion_Node *&Bool_Expreesion)
 {
 	Tree_Judge *L = new Tree_Judge;
 	L = G_L_Expreesion(First, Bool_Expreesion);
 	string test = Bool_Expreesion->next->This.gettext();
-	while(test== "&&")
+	while (test == "&&")
 	{
 		Tree_Judge *P = new Tree_Judge;
+		P->left = L;
 		char *c;
 		const int len = test.length();
 		c = new char[len + 1];
 		strcpy(c, test.c_str());
 		P->u.sign = c;
-		P->left = L;
-		test = Bool_Expreesion->This.gettext();
+		Bool_Expreesion = Bool_Expreesion->next;
 		P->right = G_L_Expreesion(First, Bool_Expreesion);
-		return P;
+		test = Bool_Expreesion->This.gettext();
+		L = P;
 	}
 	return L;
 }
 //判断表达式中||3级运算符
-Tree_Judge * OR_Expreesion(Variable_tag *First, Expreesion_Node *Bool_Expreesion)
+Tree_Judge * OR_Expreesion(Variable_tag *First, Expreesion_Node *&Bool_Expreesion)
 {
 	Tree_Judge *out = new Tree_Judge;
 	out = AND_Expreesion(First, Bool_Expreesion);
@@ -334,129 +339,185 @@ Tree_Judge * OR_Expreesion(Variable_tag *First, Expreesion_Node *Bool_Expreesion
 	while (test == "||")
 	{
 		Tree_Judge *P = new Tree_Judge;
+		P->left= out;
 		char *c;
 		const int len = test.length();
 		c = new char[len + 1];
 		strcpy(c, test.c_str());
 		P->u.sign = c;
-		P->left = out;
-		test = Bool_Expreesion->This.gettext();
+		Bool_Expreesion = Bool_Expreesion->next;
 		P->right = AND_Expreesion(First, Bool_Expreesion);
-		return out;
+		test = Bool_Expreesion->This.gettext();
+		out = P;
 	}
 	return out;
 }
 //后序遍历判断表达式所需要的栈
-stack<Tree_Judge *> Expreesion_Stack;
+/*
+为遍历结果建3个栈，作用是用于第1优先级的运算符和Bool结果
+*/
+stack<Tree_Judge *> Expreesion_StackFirst;
+stack<Tree_Judge *> Expreesion_StackSec;
 //后序遍历判断表达式的语法树
+
 void Postinorder_Expreesion(Tree_Judge * &Judeg_Expreesion)
 {
 	if (Judeg_Expreesion != NULL)
 	{
 		Postinorder_Expreesion(Judeg_Expreesion->left);
 		Postinorder_Expreesion(Judeg_Expreesion->right);
-		if (Expreesion_Stack.size() >= 2)
+		if (Expreesion_StackFirst.size() >= 2)
 		{
 			string s(Judeg_Expreesion->u.sign);
-			if (s=="<") //在栈中判断<
+			if (s == "<") //在栈中判断<
 			{
 				int one, two;
-				one = Expreesion_Stack.top()->u.data;
-				Expreesion_Stack.pop();
-				two = Expreesion_Stack.top()->u.data;
-				Expreesion_Stack.pop();
-				if (two < one)
+				one = Expreesion_StackFirst.top()->u.data;
+				Expreesion_StackFirst.pop();
+				two = Expreesion_StackFirst.top()->u.data;
+				Expreesion_StackFirst.pop();
+				if (two<one)
 				{
 					Tree_Judge *statue = new Tree_Judge;
 					statue->type = Bool;
 					statue->u.bool_output = 1;
-					Expreesion_Stack.push(statue);
+					Expreesion_StackSec.push(statue);
 				}
 				else
 				{
 					Tree_Judge *statue = new Tree_Judge;
 					statue->type = Bool;
 					statue->u.bool_output = 0;
-					Expreesion_Stack.push(statue);
+					Expreesion_StackSec.push(statue);
 				}
 			}
-			if (Judeg_Expreesion->u.sign == ">") //在栈中判断>
+			else if (s== ">") //在栈中判断>
 			{
 				int one, two;
-				one = Expreesion_Stack.top()->u.data;
-				Expreesion_Stack.pop();
-				two = Expreesion_Stack.top()->u.data;
-				Expreesion_Stack.pop();
-				if (one > two)
+				one = Expreesion_StackFirst.top()->u.data;
+				Expreesion_StackFirst.pop();
+				two = Expreesion_StackFirst.top()->u.data;
+				Expreesion_StackFirst.pop();
+				if (two >one )
 				{
 					Tree_Judge *statue = new Tree_Judge;
 					statue->type = Bool;
 					statue->u.bool_output = 1;
-					Expreesion_Stack.push(statue);
+					Expreesion_StackSec.push(statue);
 				}
 				else
 				{
 					Tree_Judge *statue = new Tree_Judge;
 					statue->type = Bool;
 					statue->u.bool_output = 0;
-					Expreesion_Stack.push(statue);
+					Expreesion_StackSec.push(statue);
 				}
 			}
-			if (Judeg_Expreesion->u.sign == "<=")
+			else if (s== "<=")
 			{
 				int one, two;
-				one = Expreesion_Stack.top()->u.data;
-				Expreesion_Stack.pop();
-				two = Expreesion_Stack.top()->u.data;
-				Expreesion_Stack.pop();
-				if (one <= two)
+				one = Expreesion_StackFirst.top()->u.data;
+				Expreesion_StackFirst.pop();
+				two = Expreesion_StackFirst.top()->u.data;
+				Expreesion_StackFirst.pop();
+				if (two <= one)
 				{
 					Tree_Judge *statue = new Tree_Judge;
 					statue->type = Bool;
 					statue->u.bool_output = 1;
-					Expreesion_Stack.push(statue);
+					Expreesion_StackSec.push(statue);
 				}
 				else
 				{
 					Tree_Judge *statue = new Tree_Judge;
 					statue->type = Bool;
 					statue->u.bool_output = 0;
-					Expreesion_Stack.push(statue);
+					Expreesion_StackSec.push(statue);
 				}
 			}
-			if (Judeg_Expreesion->u.sign == ">=")
+			else if (s== ">=")
 			{
 				int one, two;
-				one = Expreesion_Stack.top()->u.data;
-				Expreesion_Stack.pop();
-				two = Expreesion_Stack.top()->u.data;
-				Expreesion_Stack.pop();
-				if (one >= two)
+				one = Expreesion_StackFirst.top()->u.data;
+				Expreesion_StackFirst.pop();
+				two = Expreesion_StackFirst.top()->u.data;
+				Expreesion_StackFirst.pop();
+				if (two>= one)
 				{
 					Tree_Judge *statue = new Tree_Judge;
 					statue->type = Bool;
 					statue->u.bool_output = 1;
-					Expreesion_Stack.push(statue);
+					Expreesion_StackSec.push(statue);
 				}
 				else
 				{
 					Tree_Judge *statue = new Tree_Judge;
 					statue->type = Bool;
 					statue->u.bool_output = 0;
-					Expreesion_Stack.push(statue);
+					Expreesion_StackSec.push(statue);
+				}
+			}
+		}
+		else if (Expreesion_StackSec.size() >= 2)
+		{
+			string s(Judeg_Expreesion->u.sign);
+			if (s== "||")
+			{
+				bool one, two;
+				one = Expreesion_StackSec.top()->u.bool_output;
+				Expreesion_StackSec.pop();
+				two = Expreesion_StackSec.top()->u.bool_output;
+				Expreesion_StackSec.pop();
+				if (one || two)
+				{
+					Tree_Judge *statue = new Tree_Judge;
+					statue->type = Bool;
+					statue->u.bool_output = 1;
+					Expreesion_StackSec.push(statue);
+				}
+				else
+				{
+					Tree_Judge *statue = new Tree_Judge;
+					statue->type = Bool;
+					statue->u.bool_output = 0;
+					Expreesion_StackSec.push(statue);
+				}
+			}
+			else if (s == "&&")
+			{
+				bool one, two;
+				one = Expreesion_StackSec.top()->u.bool_output;
+				Expreesion_StackSec.pop();
+				two = Expreesion_StackSec.top()->u.bool_output;
+				Expreesion_StackSec.pop();
+				if (one && two)
+				{
+					Tree_Judge *statue = new Tree_Judge;
+					statue->type = Bool;
+					statue->u.bool_output = 1;
+					Expreesion_StackSec.push(statue);
+				}
+				else
+				{
+					Tree_Judge *statue = new Tree_Judge;
+					statue->type = Bool;
+					statue->u.bool_output = 0;
+					Expreesion_StackSec.push(statue);
 				}
 			}
 		}
 		else
-			Expreesion_Stack.push(Judeg_Expreesion);
+			Expreesion_StackFirst.push(Judeg_Expreesion);
 	}
 }
+//得到判断表达式的字符流
 void Get_BoolExpression(Expreesion_Node * &Bool_Expreesion)
 {
 	Expreesion_Node *P = new Expreesion_Node;
 	P = Bool_Expreesion;
+	Bool_Expreesion->statue = true;
 	string test = Lexer_out.peek(0).gettext();
-	while (test != "(")
+	while (test[0] != ')')
 	{
 		Expreesion_Node *Q = new Expreesion_Node;
 		Q->This = Lexer_out.read();
@@ -468,57 +529,77 @@ void Get_BoolExpression(Expreesion_Node * &Bool_Expreesion)
 //判断表达式的BOOL值
 bool  Bool_Expreesion(Variable_tag *First)
 {
-	Expreesion_Node *Bool_Expreesion=new Expreesion_Node;//保存判断表达式中的字符流
-	if(Bool_Expreesion->statue != true)
+	//链表头指针
+	Expreesion_Node *Bool_Expreesion = new Expreesion_Node;//保存判断表达式中的字符流
+
+	if (Bool_Expreesion->statue != true)
 	{
 		Get_BoolExpression(Bool_Expreesion);
 	}
 	Expreesion_Node *P = new Expreesion_Node;
 	P = Bool_Expreesion;
 	bool Judge_Ex;
-	Tree_Judge * Judge_Expression = new Tree_Judge;
-	Judge_Expression = OR_Expreesion(First,P);//进入三级表达式进行判断
+	Tree_Judge * Judge_Expression = new Tree_Judge;//建立判断表达式的树
+	Judge_Expression = OR_Expreesion(First, P);//进入三级表达式进行判断
 	Postinorder_Expreesion(Judge_Expression);//遍历判断表达式的语法分析树
-	Judge_Ex = Judge_Expression->u.bool_output;//输出根的结果，即bool判断的值
+	Judge_Ex = Expreesion_StackSec.top()->u.bool_output;//输出根的结果，即bool判断的值
 	return Judge_Ex;
 }
 /*
-	表达式的具体函数
+表达式的具体函数
 */
 void Assign_Expression(Variable_tag *First)
 {
-	if (Search(Lexer_out.peek(0).gettext(),First)->value.type == Int_value)
+	if (Search(Lexer_out.peek(0).gettext(), First)->value.type == Int_value)
 	{
 		Assign_Tree *Assign = new Assign_Tree;
-		Assign->left = Search(Lexer_out.read().gettext(),First)->value;
+		Assign->left = Search(Lexer_out.read().gettext(), First)->value;
 		Binary_Tree *Binary = new Binary_Tree;
 		Assign->right = parse_E(Binary);
 		Assign->left.u.int_vlaue = BinaryParse();
 	}
 }
 /*
-	语句块
+语句块
 */
+
 //执行语句块
 void Block_run(Variable_tag *First)
 {
 	Block * StatementList = new Block;
 	if (Lexer_out.peek(0).gettext() == "{")
 	{
+		//读取"{"
 		Lexer_out.read();
+		Block *Block_Expression = new Block;
+		while (Lexer_out.read().gettext() != "}")
+		{
+			if (Lexer_out.peek(1).gettext() == "=")
+			{
+				Block_Expression->statementlist->type = ASSIGN_EXPRESSION;
+				while (Lexer_out.peek(0).gettext != "\\n")
+				{
+					Block_Expression->statementlist->head->This= Lexer_out.read();
+					Token Site = Lexer_out.read();
+				}
+
+			}
+		}
+		/*
 		//是赋值表达式
 		if (Lexer_out.peek(1).gettext() == "=")
 		{
 			//算术赋值
-			if (isVariable(Lexer_out.peek(0).gettext(),First))
+			if (isVariable(Lexer_out.peek(0).gettext(), First))
 			{
 				Assign_Expression(First);
 			}
 		}
+		*/
 	}
 }
 /*
-	关键字
+关键字
 */
 //Print关键字，即输出变量值
 void Printvalue(Variable_tag *example)
@@ -554,14 +635,14 @@ void IswhatKeyword(string text, Variable_tag *First)
 	{
 		Lexer_out.read();
 		goal.type = WHILE_STATEMENT;
-		test= Lexer_out.peek(0).gettext();
-		if(test[1]=='(')
+		test = Lexer_out.peek(0).gettext();
+		if (test[1] == '(')
 		{
 			Lexer_out.read();
 			//转到判断表达式的真值
 			for (;;)
 			{
-				if (!Bool_Expreesion(First))
+				if (Bool_Expreesion(First))
 					break;
 				else
 					Block_run(First);//否则执行语句块
@@ -571,9 +652,9 @@ void IswhatKeyword(string text, Variable_tag *First)
 	else if (text == "print") //关键字是Print
 	{
 		string test = Lexer_out.peek(0).gettext();
-		if (isVariable(test,First))
+		if (isVariable(test, First))
 		{
-			Variable_tag *example = Search(text,First);
+			Variable_tag *example = Search(text, First);
 			Printvalue(example);
 		}
 	}
@@ -582,7 +663,7 @@ void IswhatKeyword(string text, Variable_tag *First)
 void Parser()
 {
 	Variable_tag *First = new Variable_tag;//全局变量链表的头指针
-	First->next= NULL;
+	First->next = NULL;
 	string text;
 	while (Queue.size() != 0)
 	{
@@ -593,16 +674,17 @@ void Parser()
 			text = text = Lexer_out.peek(0).gettext();
 		}
 		if (IsKeyword(text))//是关键字
-			IswhatKeyword(text,First);
+			IswhatKeyword(text, First);
+		//初始化赋值
 		else if (Lexer_out.peek(1).gettext() == "=") //赋值语句
 		{
 			Add_Variable(First);
 		}
-		else if (isVariable(text,First)) //是变量
+		else if (isVariable(text, First)) //是变量
 		{
 
 		}
-		
+
 	}
 }
 int main()
