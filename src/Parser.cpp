@@ -3,11 +3,11 @@
 #include <stack>
 #include <string>
 using namespace std;
-Lexer Lexer_out;//è¯æ³•åˆ†æçš„ç»“æœ
+Lexer Lexer_out;//´Ê·¨·ÖÎöµÄ½á¹û
 /*
-å˜é‡
+	±äÁ¿
 */
-//å˜é‡æŸ¥æ‰¾ï¼Œå·²çŸ¥å­˜åœ¨ï¼ŒæŸ¥æ‰¾å…·ä½“å˜é‡
+//±äÁ¿²éÕÒ£¬ÒÑÖª´æÔÚ£¬²éÕÒ¾ßÌå±äÁ¿
 Variable_tag *Search(string text, Variable_tag *First)
 {
 	Variable_tag *test = First->next;
@@ -17,7 +17,7 @@ Variable_tag *Search(string text, Variable_tag *First)
 			return test;
 	}
 }
-//åˆ¤æ–­æ˜¯ä¸æ˜¯å˜é‡
+//ÅĞ¶ÏÊÇ²»ÊÇ±äÁ¿
 bool isVariable(string Text, Variable_tag *First)
 {
 	Variable_tag *test = First;
@@ -29,7 +29,7 @@ bool isVariable(string Text, Variable_tag *First)
 	}
 	return false;
 }
-//å¾—å‡ºå½“å‰è¯æ³•å­—ç¬¦æµçš„å€¼,å·²ç¡®å®šæ˜¯å˜é‡
+//µÃ³öµ±Ç°´Ê·¨×Ö·ûÁ÷µÄÖµ,ÒÑÈ·¶¨ÊÇ±äÁ¿
 int Get_Variable_number(Variable_tag *First)
 {
 	int number;
@@ -47,7 +47,7 @@ int Get_Variable_number(Variable_tag *First)
 	return number;
 }
 
-//å˜é‡ä¸å­˜åœ¨é“¾è¡¨ä¸­ï¼Œå³æ·»åŠ 
+//±äÁ¿²»´æÔÚÁ´±íÖĞ£¬¼´Ìí¼Ó
 void Add_Variable(Variable_tag * &First)
 {
 	string text;
@@ -72,7 +72,7 @@ void Add_Variable(Variable_tag * &First)
 	New->next = NULL;
 	add->next = New;
 }
-//åˆ¤æ–­è¡¨è¾¾ä¸­çš„æ˜¯å˜é‡è¿˜æ˜¯æ•°å€¼å¹¶è¿”å›
+//ÅĞ¶Ï±í´ïÖĞµÄÊÇ±äÁ¿»¹ÊÇÊıÖµ²¢·µ»Ø
 int Judeg_Variable(Variable_tag *First)
 {
 	if (isVariable(Lexer_out.peek(0).gettext(), First))
@@ -87,7 +87,7 @@ int Judeg_Variable(Variable_tag *First)
 		return number;
 	}
 }
-int Judeg_Variable(Variable_tag *First, string search)//é‡è½½å‡½æ•° Judeg_Variable,ä¼ å…¥å˜é‡çš„å­—ç¬¦å€¼ï¼Œå¯»æ‰¾å˜é‡çš„å€¼
+int Judeg_Variable(Variable_tag *First, string search)//ÖØÔØº¯Êı Judeg_Variable,´«Èë±äÁ¿µÄ×Ö·ûÖµ£¬Ñ°ÕÒ±äÁ¿µÄÖµ
 {
 	if (isVariable(search, First))
 	{
@@ -97,12 +97,12 @@ int Judeg_Variable(Variable_tag *First, string search)//é‡è½½å‡½æ•° Judeg_Varia
 	}
 }
 /*
-ç®—æœ¯è¡¨è¾¾å¼
+	ËãÊõ±í´ïÊ½
 */
-//ç®—æœ¯è¡¨è¾¾å¼çš„è¯­æ³•æ ‘
+//ËãÊõ±í´ïÊ½µÄÓï·¨Ê÷
 int i, sum = 0;
 char *str = 0;
-//åˆ¤æ–­ä¸€ä¸ªå­—ç¬¦æ˜¯å¦ä¸ºæ•°å­—
+//ÅĞ¶ÏÒ»¸ö×Ö·ûÊÇ·ñÎªÊı×Ö
 bool isdigit(char c)
 {
 	if (c - '0' <= 9 && c - '0' >= 0)
@@ -113,7 +113,7 @@ bool isdigit(char c)
 Binary_Tree * parse_F(Binary_Tree *&sun);
 Binary_Tree * parse_T(Binary_Tree *&sun);
 Binary_Tree * parse_E(Binary_Tree *&root);
-//å› å­
+//Òò×Ó
 Binary_Tree * parse_F(Binary_Tree *&sun)
 {
 	Binary_Tree *L = new Binary_Tree;
@@ -139,7 +139,7 @@ Binary_Tree * parse_F(Binary_Tree *&sun)
 	}
 	return L;
 }
-//é¡¹
+//Ïî
 Binary_Tree * parse_T(Binary_Tree *&sun)
 {
 	Binary_Tree *L = new Binary_Tree;
@@ -166,7 +166,7 @@ Binary_Tree * parse_T(Binary_Tree *&sun)
 	}
 	return L;
 }
-//è¡¨è¾¾å¼
+//±í´ïÊ½
 Binary_Tree * parse_E(Binary_Tree *&root)
 
 {
@@ -196,7 +196,7 @@ Binary_Tree * parse_E(Binary_Tree *&root)
 		return sun;
 	return sun;
 }
-//ååºéå†ç®—æœ¯è¡¨è¾¾å¼çš„æ ‘
+//ºóĞò±éÀúËãÊõ±í´ïÊ½µÄÊ÷
 void post(Binary_Tree * &root, stack<int> s)
 {
 	int a, b;
@@ -236,10 +236,10 @@ void post(Binary_Tree * &root, stack<int> s)
 		}
 	}
 }
-//è¿”å›ç®—æœ¯è¡¨è¾¾å¼è¯­æ³•åˆ†æçš„ç»“æœ
+//·µ»ØËãÊõ±í´ïÊ½Óï·¨·ÖÎöµÄ½á¹û
 int BinaryParse()
 {
-	stack<int> s; //è®¡ç®—ç®—æœ¯è¡¨è¾¾å¼çš„æ ˆ
+	stack<int> s; //¼ÆËãËãÊõ±í´ïÊ½µÄÕ»
 	i = 0;
 	Binary_Tree * L = new Binary_Tree;
 	Binary_Tree *sun = new Binary_Tree;
@@ -247,26 +247,26 @@ int BinaryParse()
 	return s.top();
 }
 /*
-æ¡ä»¶åˆ¤æ–­è¡¨è¾¾å¼
+	Ìõ¼şÅĞ¶Ï±í´ïÊ½
 */
 /*
-åˆ¤æ–­è¡¨è¾¾å¼çš„è¯­æ³•åˆ†ææ ‘æ˜¯å¦ä¸ºçœŸ
-æ ¹æ®ç¬¦å·çš„ä¼˜å…ˆçº§ç±»æ¯”ç®—æ•°è¿ç®—ç¬¦è¿›å»æ¯”è¾ƒ
+ÅĞ¶Ï±í´ïÊ½µÄÓï·¨·ÖÎöÊ÷ÊÇ·ñÎªÕæ
+¸ù¾İ·ûºÅµÄÓÅÏÈ¼¶Àà±ÈËãÊıÔËËã·û½øÈ¥±È½Ï
 */
-//åˆ¤æ–­è¡¨è¾¾å¼å­—ç¬¦æµé“¾è¡¨ç»“æ„ä½“
+//ÅĞ¶Ï±í´ïÊ½×Ö·ûÁ÷Á´±í½á¹¹Ìå
 struct Expreesion_Node
 {
 	bool statue;
 	Token This;
 	Expreesion_Node *next;
 };
-//åˆ¤æ–­è¡¨è¾¾å¼ä¸­<,>,<=,>=1çº§è¿ç®—ç¬¦
+//ÅĞ¶Ï±í´ïÊ½ÖĞ<,>,<=,>=1¼¶ÔËËã·û
 Tree_Judge* G_L_Expreesion(Variable_tag *First, Expreesion_Node *&Bool_Expreesion)
 {
 	int number;
 	Tree_Judge *L = new Tree_Judge;
 	string test =Bool_Expreesion->next->This.gettext();
-	if (isVariable(test, First))//å¦‚æœæ˜¯å˜é‡
+	if (isVariable(test, First))//Èç¹ûÊÇ±äÁ¿
 	{
 		number = Judeg_Variable(First, test);
 
@@ -289,7 +289,7 @@ Tree_Judge* G_L_Expreesion(Variable_tag *First, Expreesion_Node *&Bool_Expreesio
 		L->u.sign = c;
 		Bool_Expreesion = Bool_Expreesion->next;
 		test = Bool_Expreesion->next->This.gettext();
-		if (isVariable(test, First))//å¦‚æœæ˜¯å˜é‡
+		if (isVariable(test, First))//Èç¹ûÊÇ±äÁ¿
 		{
 
 			number = Judeg_Variable(First, test);
@@ -308,7 +308,7 @@ Tree_Judge* G_L_Expreesion(Variable_tag *First, Expreesion_Node *&Bool_Expreesio
 	return L;
 
 }
-//åˆ¤æ–­è¡¨è¾¾å¼ä¸­&&2çº§è¿ç®—ç¬¦
+//ÅĞ¶Ï±í´ïÊ½ÖĞ&&2¼¶ÔËËã·û
 Tree_Judge * AND_Expreesion(Variable_tag *First, Expreesion_Node *&Bool_Expreesion)
 {
 	Tree_Judge *L = new Tree_Judge;
@@ -330,7 +330,7 @@ Tree_Judge * AND_Expreesion(Variable_tag *First, Expreesion_Node *&Bool_Expreesi
 	}
 	return L;
 }
-//åˆ¤æ–­è¡¨è¾¾å¼ä¸­||3çº§è¿ç®—ç¬¦
+//ÅĞ¶Ï±í´ïÊ½ÖĞ||3¼¶ÔËËã·û
 Tree_Judge * OR_Expreesion(Variable_tag *First, Expreesion_Node *&Bool_Expreesion)
 {
 	Tree_Judge *out = new Tree_Judge;
@@ -352,13 +352,13 @@ Tree_Judge * OR_Expreesion(Variable_tag *First, Expreesion_Node *&Bool_Expreesio
 	}
 	return out;
 }
-//ååºéå†åˆ¤æ–­è¡¨è¾¾å¼æ‰€éœ€è¦çš„æ ˆ
+//ºóĞò±éÀúÅĞ¶Ï±í´ïÊ½ËùĞèÒªµÄÕ»
 /*
-ä¸ºéå†ç»“æœå»º3ä¸ªæ ˆï¼Œä½œç”¨æ˜¯ç”¨äºç¬¬1ä¼˜å…ˆçº§çš„è¿ç®—ç¬¦å’ŒBoolç»“æœ
+Îª±éÀú½á¹û½¨3¸öÕ»£¬×÷ÓÃÊÇÓÃÓÚµÚ1ÓÅÏÈ¼¶µÄÔËËã·ûºÍBool½á¹û
 */
 stack<Tree_Judge *> Expreesion_StackFirst;
 stack<Tree_Judge *> Expreesion_StackSec;
-//ååºéå†åˆ¤æ–­è¡¨è¾¾å¼çš„è¯­æ³•æ ‘
+//ºóĞò±éÀúÅĞ¶Ï±í´ïÊ½µÄÓï·¨Ê÷
 
 void Postinorder_Expreesion(Tree_Judge * &Judeg_Expreesion)
 {
@@ -369,7 +369,7 @@ void Postinorder_Expreesion(Tree_Judge * &Judeg_Expreesion)
 		if (Expreesion_StackFirst.size() >= 2)
 		{
 			string s(Judeg_Expreesion->u.sign);
-			if (s == "<") //åœ¨æ ˆä¸­åˆ¤æ–­<
+			if (s == "<") //ÔÚÕ»ÖĞÅĞ¶Ï<
 			{
 				int one, two;
 				one = Expreesion_StackFirst.top()->u.data;
@@ -391,7 +391,7 @@ void Postinorder_Expreesion(Tree_Judge * &Judeg_Expreesion)
 					Expreesion_StackSec.push(statue);
 				}
 			}
-			else if (s== ">") //åœ¨æ ˆä¸­åˆ¤æ–­>
+			else if (s== ">") //ÔÚÕ»ÖĞÅĞ¶Ï>
 			{
 				int one, two;
 				one = Expreesion_StackFirst.top()->u.data;
@@ -510,7 +510,7 @@ void Postinorder_Expreesion(Tree_Judge * &Judeg_Expreesion)
 			Expreesion_StackFirst.push(Judeg_Expreesion);
 	}
 }
-//å¾—åˆ°åˆ¤æ–­è¡¨è¾¾å¼çš„å­—ç¬¦æµ
+//µÃµ½ÅĞ¶Ï±í´ïÊ½µÄ×Ö·ûÁ÷
 void Get_BoolExpression(Expreesion_Node * &Bool_Expreesion)
 {
 	Expreesion_Node *P = new Expreesion_Node;
@@ -526,11 +526,11 @@ void Get_BoolExpression(Expreesion_Node * &Bool_Expreesion)
 		P = Q;
 	}
 }
-//åˆ¤æ–­è¡¨è¾¾å¼çš„BOOLå€¼
+//ÅĞ¶Ï±í´ïÊ½µÄBOOLÖµ
 bool  Bool_Expreesion(Variable_tag *First)
 {
-	//é“¾è¡¨å¤´æŒ‡é’ˆ
-	Expreesion_Node *Bool_Expreesion = new Expreesion_Node;//ä¿å­˜åˆ¤æ–­è¡¨è¾¾å¼ä¸­çš„å­—ç¬¦æµ
+	//Á´±íÍ·Ö¸Õë
+	Expreesion_Node *Bool_Expreesion = new Expreesion_Node;//±£´æÅĞ¶Ï±í´ïÊ½ÖĞµÄ×Ö·ûÁ÷
 
 	if (Bool_Expreesion->statue != true)
 	{
@@ -539,14 +539,14 @@ bool  Bool_Expreesion(Variable_tag *First)
 	Expreesion_Node *P = new Expreesion_Node;
 	P = Bool_Expreesion;
 	bool Judge_Ex;
-	Tree_Judge * Judge_Expression = new Tree_Judge;//å»ºç«‹åˆ¤æ–­è¡¨è¾¾å¼çš„æ ‘
-	Judge_Expression = OR_Expreesion(First, P);//è¿›å…¥ä¸‰çº§è¡¨è¾¾å¼è¿›è¡Œåˆ¤æ–­
-	Postinorder_Expreesion(Judge_Expression);//éå†åˆ¤æ–­è¡¨è¾¾å¼çš„è¯­æ³•åˆ†ææ ‘
-	Judge_Ex = Expreesion_StackSec.top()->u.bool_output;//è¾“å‡ºæ ¹çš„ç»“æœï¼Œå³boolåˆ¤æ–­çš„å€¼
+	Tree_Judge * Judge_Expression = new Tree_Judge;//½¨Á¢ÅĞ¶Ï±í´ïÊ½µÄÊ÷
+	Judge_Expression = OR_Expreesion(First, P);//½øÈëÈı¼¶±í´ïÊ½½øĞĞÅĞ¶Ï
+	Postinorder_Expreesion(Judge_Expression);//±éÀúÅĞ¶Ï±í´ïÊ½µÄÓï·¨·ÖÎöÊ÷
+	Judge_Ex = Expreesion_StackSec.top()->u.bool_output;//Êä³ö¸ùµÄ½á¹û£¬¼´boolÅĞ¶ÏµÄÖµ
 	return Judge_Ex;
 }
 /*
-è¡¨è¾¾å¼çš„å…·ä½“å‡½æ•°
+±í´ïÊ½µÄ¾ßÌåº¯Êı
 */
 void Assign_Expression(Variable_tag *First)
 {
@@ -560,53 +560,44 @@ void Assign_Expression(Variable_tag *First)
 	}
 }
 /*
-è¯­å¥å—
+	Óï¾ä¿é
 */
 
-//æ‰§è¡Œè¯­å¥å—
+//Ö´ĞĞÓï¾ä¿é
 void Block_run(Variable_tag *First)
 {
 	Block * StatementList = new Block;
 	if (Lexer_out.peek(0).gettext() == "{")
 	{
-		//è¯»å–"{"
-		Lexer_out.read();
+		Lexer_out.read();//¶ÁÈ¡"{"
 		Block *Block_Expression = new Block;
 		while (Lexer_out.read().gettext() != "}")
 		{
 			if (Lexer_out.peek(1).gettext() == "=")
 			{
 				Block_Expression->statementlist->type = ASSIGN_EXPRESSION;
+				Block_Expression->statementlist->head->This = Lexer_out.read();
 				while (Lexer_out.peek(0).gettext != "\\n")
 				{
-					Block_Expression->statementlist->head->This= Lexer_out.read();
+					
 					Token Site = Lexer_out.read();
+					Block_Expression->statementlist->head->next->This = Site;
+					Block_Expression->statementlist->head = Block_Expression->statementlist->head->next;
 				}
-
 			}
 		}
-		/*
-		//æ˜¯èµ‹å€¼è¡¨è¾¾å¼
-		if (Lexer_out.peek(1).gettext() == "=")
-		{
-			//ç®—æœ¯èµ‹å€¼
-			if (isVariable(Lexer_out.peek(0).gettext(), First))
-			{
-				Assign_Expression(First);
-			}
-		}
-		*/
+		Lexer_out.read();//¶ÁÈ¡"}"
 	}
 }
 /*
-å…³é”®å­—
+¹Ø¼ü×Ö
 */
-//Printå…³é”®å­—ï¼Œå³è¾“å‡ºå˜é‡å€¼
+//Print¹Ø¼ü×Ö£¬¼´Êä³ö±äÁ¿Öµ
 void Printvalue(Variable_tag *example)
 {
 	switch (example->value.type)
 	{
-	case Int_value: //å˜é‡æ˜¯intå‹
+	case Int_value: //±äÁ¿ÊÇintĞÍ
 	{
 						int number;
 						number = example->value.u.int_vlaue;
@@ -616,7 +607,7 @@ void Printvalue(Variable_tag *example)
 		break;
 	}
 }
-//åˆ¤æ–­æ˜¯ä¸æ˜¯å…³é”®å­—
+//ÅĞ¶ÏÊÇ²»ÊÇ¹Ø¼ü×Ö
 bool IsKeyword(string s)
 {
 	if (s == "while")
@@ -626,12 +617,12 @@ bool IsKeyword(string s)
 	else
 		return false;
 }
-//æ˜¯ä»€ä¹ˆå…³é”®å­—
+//ÊÇÊ²Ã´¹Ø¼ü×Ö
 void IswhatKeyword(string text, Variable_tag *First)
 {
 	Statement_tag goal;
 	string test;
-	if (text == "while") //å…³é”®å­—æ˜¯While
+	if (text == "while") //¹Ø¼ü×ÖÊÇWhile
 	{
 		Lexer_out.read();
 		goal.type = WHILE_STATEMENT;
@@ -639,17 +630,17 @@ void IswhatKeyword(string text, Variable_tag *First)
 		if (test[1] == '(')
 		{
 			Lexer_out.read();
-			//è½¬åˆ°åˆ¤æ–­è¡¨è¾¾å¼çš„çœŸå€¼
+			//×ªµ½ÅĞ¶Ï±í´ïÊ½µÄÕæÖµ
 			for (;;)
 			{
 				if (Bool_Expreesion(First))
 					break;
 				else
-					Block_run(First);//å¦åˆ™æ‰§è¡Œè¯­å¥å—
+					Block_run(First);//·ñÔòÖ´ĞĞÓï¾ä¿é
 			}
 		}
 	}
-	else if (text == "print") //å…³é”®å­—æ˜¯Print
+	else if (text == "print") //¹Ø¼ü×ÖÊÇPrint
 	{
 		string test = Lexer_out.peek(0).gettext();
 		if (isVariable(test, First))
@@ -659,10 +650,10 @@ void IswhatKeyword(string text, Variable_tag *First)
 		}
 	}
 }
-//è¯­æ³•åˆ†æ
+//Óï·¨·ÖÎö
 void Parser()
 {
-	Variable_tag *First = new Variable_tag;//å…¨å±€å˜é‡é“¾è¡¨çš„å¤´æŒ‡é’ˆ
+	Variable_tag *First = new Variable_tag;//È«¾Ö±äÁ¿Á´±íµÄÍ·Ö¸Õë
 	First->next = NULL;
 	string text;
 	while (Queue.size() != 0)
@@ -673,14 +664,14 @@ void Parser()
 			Lexer_out.read();
 			text = text = Lexer_out.peek(0).gettext();
 		}
-		if (IsKeyword(text))//æ˜¯å…³é”®å­—
+		if (IsKeyword(text))//ÊÇ¹Ø¼ü×Ö
 			IswhatKeyword(text, First);
-		//åˆå§‹åŒ–èµ‹å€¼
-		else if (Lexer_out.peek(1).gettext() == "=") //èµ‹å€¼è¯­å¥
+		//³õÊ¼»¯¸³Öµ
+		else if (Lexer_out.peek(1).gettext() == "=") //¸³ÖµÓï¾ä
 		{
 			Add_Variable(First);
 		}
-		else if (isVariable(text, First)) //æ˜¯å˜é‡
+		else if (isVariable(text, First)) //ÊÇ±äÁ¿
 		{
 
 		}
