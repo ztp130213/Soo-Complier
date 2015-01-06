@@ -9,7 +9,7 @@
 using namespace std;
 boost::smatch what;
 boost::cmatch mat;
-boost::regex expression("\\s*((//.*)|([0-9]+)|(\"(\\\\\"|\\\\\\\\|\\\\n|[^\"])*\")|[A-Z_a-z][A-Z_a-z0-9]*|==|<=|>=|&&|\\|\\||\\p{Punct})?");
+boost::regex expression("\\s*((//.*)|([0-9]+)|(\"(\\\\\"|\\\\\\\\|\\\\n|[^\"])*\")|[A-Z_a-z][A-Z_a-z0-9]*|==|!=|<=|>=|&&|\\|\\||\\p{Punct})?");
 //Token¿‡
 class Token
 {
@@ -54,7 +54,7 @@ public:
 };
 Token StopEOF(-1);
 
-queue<Token> Queue; 
+queue<Token> Queue;
 //¥ ∑®∑÷Œˆ
 class Lexer
 {
