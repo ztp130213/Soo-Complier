@@ -65,7 +65,6 @@ typedef enum {
 	MINUS_EXPRESSION,
 	NULL_EXPRESSION,
 	EXPRESSION_TYPE_COUNT_PLUS_1,
-	ASSIGN_EXPRESSION  //赋值表达式
 	//BOOLEAN_EXPRESSION	Bool_expression; //bool型常量
 	//ADD_EXPRESSION		Add_expreesion; //相加表达式
 	//SUB_EXPRESSION	Sub_expreesion;//减法表达式
@@ -133,11 +132,11 @@ struct Tree_Judge
 /*
 		语句块Block
 */
-//语句块结构体
-struct Block
+//语句块字符流链表
+struct Block_Token
 {
-	StatementLink *statementlist;
-	StatementLink *next;
+	Token This;
+	Block_Token *next;
 };
 //语句结构体
 struct StatementLink
@@ -146,12 +145,13 @@ struct StatementLink
 	Block_Token * head;//链表
 
 };
-//语句块字符流链表
-struct Block_Token
+//语句块结构体
+struct Block
 {
-	Token This;
-	Block_Token *next;
+	StatementLink *statementlist;
+	StatementLink *next;
 };
+
 //赋值表达式的树形结构
 struct Assign_Tree
 {

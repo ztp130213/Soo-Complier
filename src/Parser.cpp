@@ -567,27 +567,39 @@ void Assign_Expression(Variable_tag *First)
 void Block_run(Variable_tag *First)
 {
 	Block * StatementList = new Block;
+	/*
+		将Token 读入到语句块的链表中
+	*/
 	if (Lexer_out.peek(0).gettext() == "{")
 	{
 		Lexer_out.read();//读取"{"
 		Block *Block_Expression = new Block;
+		Block *Dirty = new Block;
+		Dirty = Block_Expression;
 		while (Lexer_out.read().gettext() != "}")
 		{
 			if (Lexer_out.peek(1).gettext() == "=")
 			{
-				Block_Expression->statementlist->type = ASSIGN_EXPRESSION;
-				Block_Expression->statementlist->head->This = Lexer_out.read();
-				while (Lexer_out.peek(0).gettext != "\\n")
+				Dirty->statementlist->type = ASSIGN_EXPRESSION;
+				Dirty->statementlist->head->This = Lexer_out.read();
+				Dirty->statementlist->head = Dirty->statementlist->head->next;
+				while (Lexer_out.peek(0).gettext()!= "\\n")
 				{
 					
 					Token Site = Lexer_out.read();
-					Block_Expression->statementlist->head->next->This = Site;
-					Block_Expression->statementlist->head = Block_Expression->statementlist->head->next;
+					Dirty->statementlist->head->This = Site;
+					Dirty->statementlist->head->next = NULL;
+					Dirty->statementlist->head = Dirty->statementlist->head->next;
 				}
+				Dirty->statementlist = Dirty->next;
 			}
+			Dirty->next = NULL;
 		}
 		Lexer_out.read();//读取"}"
 	}
+	/*
+		执行语句块
+	*/
 }
 /*
 关键字
@@ -627,13 +639,13 @@ void IswhatKeyword(string text, Variable_tag *First)
 		Lexer_out.read();
 		goal.type = WHILE_STATEMENT;
 		test = Lexer_out.peek(0).gettext();
-		if (test[1] == '(')
+		if (test[0] == '(')
 		{
 			Lexer_out.read();
 			//转到判断表达式的真值
 			for (;;)
 			{
-				if (Bool_Expreesion(First))
+				if (!Bool_Expreesion(First))
 					break;
 				else
 					Block_run(First);//否则执行语句块
