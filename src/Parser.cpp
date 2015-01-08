@@ -237,7 +237,7 @@ void post(Binary_Tree * &root, stack<int> s)
 	}
 }
 //返回算术表达式语法分析的结果
-int BinaryParse()
+int BinaryParse(stack<int > Assign_front)
 {
 	stack<int> s; //计算算术表达式的栈
 	i = 0;
@@ -359,7 +359,6 @@ Tree_Judge * OR_Expreesion(Variable_tag *First, Expreesion_Node *&Bool_Expreesio
 stack<Tree_Judge *> Expreesion_StackFirst;
 stack<Tree_Judge *> Expreesion_StackSec;
 //后序遍历判断表达式的语法树
-
 void Postinorder_Expreesion(Tree_Judge * &Judeg_Expreesion)
 {
 	if (Judeg_Expreesion != NULL)
@@ -546,19 +545,9 @@ bool  Bool_Expreesion(Variable_tag *First)
 	return Judge_Ex;
 }
 /*
-表达式的具体函数
+		表达式的具体函数
 */
-void Assign_Expression(Variable_tag *First)
-{
-	if (Search(Lexer_out.peek(0).gettext(), First)->value.type == Int_value)
-	{
-		Assign_Tree *Assign = new Assign_Tree;
-		Assign->left = Search(Lexer_out.read().gettext(), First)->value;
-		Binary_Tree *Binary = new Binary_Tree;
-		Assign->right = parse_E(Binary);
-		Assign->left.u.int_vlaue = BinaryParse();
-	}
-}
+
 /*
 	语句块
 */
@@ -566,43 +555,75 @@ void Assign_Expression(Variable_tag *First)
 //执行语句块
 void Block_run(Variable_tag *First)
 {
-	Block * StatementList = new Block;
+	string text = Lexer_out.peek(0).gettext();
+	if (text == "\\n")
+		Lexer_out.read();/* 读取换行符号\n*/
+	Block *Block_Expression;
 	/*
-		将Token 读入到语句块的链表中
+		如果没有读入过，即L将Token 读入到语句块的链表中,
 	*/
-	if (Lexer_out.peek(0).gettext() == "{")
+	if (Block_Expression->loading != true)
 	{
-		Lexer_out.read();//读取"{"
-		Block *Block_Expression = new Block;
-		Block *Dirty = new Block;
-		Dirty = Block_Expression;
-		while (Lexer_out.read().gettext() != "}")
+		if (Lexer_out.peek(0).gettext() == "{")
 		{
-			if (Lexer_out.peek(1).gettext() == "=")
+			Lexer_out.read();//读取"{"
+			Block *Dirty = new Block;
+			Block_Expression = Dirty;
+			while (Lexer_out.read().gettext() != "}")
 			{
-				Dirty->statementlist->type = ASSIGN_EXPRESSION;
-				Dirty->statementlist->head->This = Lexer_out.read();
-				Dirty->statementlist->head = Dirty->statementlist->head->next;
-				while (Lexer_out.peek(0).gettext()!= "\\n")
+				Dirty->loading = true;
+				//如果是赋值表达式
+				if (Lexer_out.peek(1).gettext() == "=")
 				{
-					
-					Token Site = Lexer_out.read();
-					Dirty->statementlist->head->This = Site;
-					Dirty->statementlist->head->next = NULL;
-					Dirty->statementlist->head = Dirty->statementlist->head->next;
+					StatementLink *Link = new StatementLink;
+					Dirty->type = ASSIGN_EXPRESSION;
+					Link->head->This = Lexer_out.read();
+					Link->head = Link->head->next;
+					while (Lexer_out.peek(0).gettext() != "\\n")
+					{
+						Token Site = Lexer_out.read();
+						Link->head->This = Site;
+						Link->head->next = NULL;
+						Link->head = Link->head->next;
+					}
+					if (Lexer_out.peek(0).gettext() != "\\n")
+						Lexer_out.read();//读取\n
+					Dirty->Thestatementlist = *Link;
+					Dirty = Dirty->next;
+					Dirty->next = NULL;
 				}
-				Dirty->statementlist = Dirty->next;
+
 			}
-			Dirty->next = NULL;
+			Lexer_out.read();//读取"}"
 		}
-		Lexer_out.read();//读取"}"
 	}
 	/*
 		执行语句块
 	*/
+	while (Block_Expression != NULL)
+	{
+		if (Block_Expression->type = ASSIGN_EXPRESSION)//即赋值语句
+		{
+			Assign_Tree *Assign = new Assign_Tree;
+			Assign->Sign = '=';
+			Assign->right = *Search(Block_Expression->Thestatementlist.head->This.gettext(),First);
+			//读取赋值语句的"="的后面部分
+			stack<int > Assign_front;
+			while (Block_Expression->Thestatementlist.head->next != NULL)
+			{
+				if (Block_Expression->Thestatementlist.head->This.isnumber())
+					Assign_front.push(Block_Expression->Thestatementlist.head->This.getnumber());
+				else
+					Assign_front.push(Search(Block_Expression->Thestatementlist.head->This.gettext(),First)->value.u.int_vlaue);
+				Block_Expression->Thestatementlist.head = Block_Expression->Thestatementlist.head->next;
+			}
+			Assign->left = BinaryParse(Assign_front);
+		}
+	}
+
 }
 /*
-关键字
+	关键字
 */
 //Print关键字，即输出变量值
 void Printvalue(Variable_tag *example)
@@ -611,9 +632,9 @@ void Printvalue(Variable_tag *example)
 	{
 	case Int_value: //变量是int型
 	{
-						int number;
-						number = example->value.u.int_vlaue;
-						cout << number;
+			int number;
+			number = example->value.u.int_vlaue;
+			cout << number;
 	}
 	default:
 		break;

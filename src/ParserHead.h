@@ -7,7 +7,7 @@
 #include <string>
 using namespace std;
 /*
-变量
+		变量
 */
 //变量类型
 typedef enum
@@ -132,7 +132,7 @@ struct Tree_Judge
 /*
 		语句块Block
 */
-//语句块字符流链表
+//词法分析字符流链表
 struct Block_Token
 {
 	Token This;
@@ -141,22 +141,22 @@ struct Block_Token
 //语句结构体
 struct StatementLink
 {
-	ExpressionType type;//语句类型
 	Block_Token * head;//链表
-
 };
 //语句块结构体
 struct Block
 {
-	StatementLink *statementlist;
-	StatementLink *next;
+	bool loading;//是否读取
+	ExpressionType type;//语句类型
+	StatementLink Thestatementlist;//一条语句
+	Block *next;//下一条语句
 };
-
 //赋值表达式的树形结构
 struct Assign_Tree
 {
-	Binary_Tree * right;
-	Variable_ left;
+	char Sign;
+	int left;
+	Variable_tag right;
 };
 /*
 		关键字
