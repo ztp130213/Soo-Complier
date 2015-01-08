@@ -158,6 +158,12 @@ struct Assign_Tree
 	int left;
 	Variable_tag right;
 };
+//词法分析字符流链表
+struct TokenNode
+{
+	Token This;
+	TokenNode *next;
+};
 /*
 		关键字
 */
