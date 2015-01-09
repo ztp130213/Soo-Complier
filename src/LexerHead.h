@@ -1,5 +1,5 @@
-#ifndef LEXERHEAD_H_
-#define LEXERHEAD_H_
+#ifndef _LEXERHEAD_H_
+#define _LEXERHEAD_H_
 #include <iostream>
 #include <string>
 #include <queue>
@@ -18,7 +18,7 @@ public:
 	bool NUM;
 	int linenumber;
 	string text;
-	Token()
+	Token()//无参构造函数
 	{
 		linenumber = 0;
 	}
@@ -26,7 +26,7 @@ public:
 	{
 		linenumber = line;
 	}
-	Token(int line, string id, string ID_or_NUM)
+	Token(int line, string id, string ID_or_NUM)//使用的构造函数
 	{
 		linenumber = line;
 		text = id;
@@ -41,12 +41,12 @@ public:
 			ID = false;
 		}
 	}
-	int getlinenumber(){ return linenumber; }
+	int getlinenumber(){ return linenumber; }//获得代码所在的行数
 	// bool isIdenfifier(){ return false; }
 	bool isnumber(){ return NUM; }
 	bool isstring(){ return ID; }
 	string gettext(){ return text; }
-	int getnumber()
+	int getnumber()//如果Token为数字，获得其数值
 	{
 		int n = atoi(text.c_str());
 		return n;
@@ -144,6 +144,5 @@ public:
 		Queue.push(newline);
 	}
 };
-
-
+Lexer Lexer_out;//词法分析的结果
 #endif

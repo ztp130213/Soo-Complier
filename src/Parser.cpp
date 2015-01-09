@@ -1,34 +1,15 @@
 #include "ParserHead.h"
+#include "Variable.h"
+#include "Expression.h"
+#include"Block.h"
+#include "Keyword.h"
 #include "LexerHead.h"
 #include <stack>
 #include <string>
 using namespace std;
-Lexer Lexer_out;//词法分析的结果
 /*
-	变量
+变量
 */
-//变量查找，已知存在，查找具体变量
-Variable_tag *Search(string text, Variable_tag *First)
-{
-	Variable_tag *test = First->next;
-	while (test != NULL)
-	{
-		if (test->name == text)
-			return test;
-	}
-}
-//判断是不是变量
-bool isVariable(string Text, Variable_tag *First)
-{
-	Variable_tag *test = First;
-	while (test != NULL)
-	{
-		if (test->name == Text)
-			return true;
-		test = test->next;
-	}
-	return false;
-}
 //得出当前词法字符流的值,已确定是变量
 int Get_Variable_number(Variable_tag *First)
 {
@@ -87,13 +68,36 @@ int Judeg_Variable(Variable_tag *First)
 		return number;
 	}
 }
-int Judeg_Variable(Variable_tag *First, string search)//重载函数 Judeg_Variable,传入变量的字符值，寻找变量的值
+//重载函数 Judeg_Variable,传入变量的字符值，寻找变量的值
+int Judeg_Variable(Variable_tag *First, string search)
 {
 	if (isVariable(search, First))
 	{
 		int number = 0;
 		number = Search(search, First)->value.u.int_vlaue;
 		return number;
+	}
+}
+//判断是不是变量
+bool isVariable(string Text, Variable_tag *First)
+{
+	Variable_tag *test = First;
+	while (test != NULL)
+	{
+		if (test->name == Text)
+			return true;
+		test = test->next;
+	}
+	return false;
+}
+//变量查找，已知存在，查找具体变量
+Variable_tag *Search(string text, Variable_tag *First)
+{
+	Variable_tag *test = First->next;
+	while (test != NULL)
+	{
+		if (test->name == text)
+			return test;
 	}
 }
 /*
