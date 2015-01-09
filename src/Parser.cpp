@@ -110,17 +110,18 @@ bool isdigit(char c)
 	else
 		return false;
 }
-Binary_Tree * parse_F(Binary_Tree *&sun, TokenNode *HeadToken);
-Binary_Tree * parse_T(Binary_Tree *&sun, TokenNode *HeadToken);
-Binary_Tree * parse_E(Binary_Tree *&root, TokenNode *HeadToken);
+Binary_Tree * parse_F(Binary_Tree *&sun, TokenNode *&HeadToken);
+Binary_Tree * parse_T(Binary_Tree *&sun, TokenNode *&HeadToken);
+Binary_Tree * parse_E(Binary_Tree *&root, TokenNode *&HeadToken);
 //因子
-Binary_Tree * parse_F(Binary_Tree *&sun, TokenNode *HeadToken)
+Binary_Tree * parse_F(Binary_Tree *&sun, TokenNode *&HeadToken)
 {
 	Binary_Tree *L = new Binary_Tree;
 	char c = HeadToken->This.gettext()[0];
 	if (isdigit(c)){
 		i++;
 		L->data = c;
+		HeadToken = HeadToken->next;
 		L->left = NULL;
 		L->right = NULL;
 		return L;
@@ -129,9 +130,10 @@ Binary_Tree * parse_F(Binary_Tree *&sun, TokenNode *HeadToken)
 	{
 		i++;
 		L = parse_E(sun,HeadToken);
-		c = str[i];
+		c = HeadToken->This.gettext()[0];
 		if (c == ')')
 		{
+			HeadToken = HeadToken->next;
 			i++;
 			return L;
 		}
@@ -140,19 +142,20 @@ Binary_Tree * parse_F(Binary_Tree *&sun, TokenNode *HeadToken)
 	return L;
 }
 //项
-Binary_Tree * parse_T(Binary_Tree *&sun, TokenNode *HeadToken)
+Binary_Tree * parse_T(Binary_Tree *&sun, TokenNode *&HeadToken)
 {
 	Binary_Tree *L = new Binary_Tree;
 	L->data = 'T';
 	L->left = parse_F(sun,HeadToken);
 	L->right = NULL;
-	char c = str[i];
+	char c = HeadToken->This.gettext()[0];
 	while (c == '*' || c == '/'){
 		i++;
 		if (L->right == NULL)
 		{
 			L->right = parse_F(sun,HeadToken);
 			L->data = c;
+			HeadToken = HeadToken->next;
 		}
 		else
 		{
@@ -160,6 +163,7 @@ Binary_Tree * parse_T(Binary_Tree *&sun, TokenNode *HeadToken)
 			P->right = parse_F(P,HeadToken);
 			P->left = L;
 			P->data = c;
+			HeadToken = HeadToken->next;
 			L = P;
 		}
 		c = str[i];
@@ -167,20 +171,21 @@ Binary_Tree * parse_T(Binary_Tree *&sun, TokenNode *HeadToken)
 	return L;
 }
 //表达式
-Binary_Tree * parse_E(Binary_Tree *&root, TokenNode *HeadToken)
+Binary_Tree * parse_E(Binary_Tree *&root, TokenNode * &HeadToken)
 
 {
 	Binary_Tree *sun = new Binary_Tree;
 	sun->data = 'E';
 	sun->left = parse_T(sun,HeadToken);
 	sun->right = NULL;
-	char c = str[i];
+	char c = HeadToken->This.gettext()[0];
 	while (c == '+' || c == '-'){
 		i++;
 		if (sun->right == NULL)
 		{
 			sun->right = parse_T(sun,HeadToken);
 			sun->data = c;
+			HeadToken = HeadToken->next;
 		}
 		else
 		{
@@ -188,9 +193,10 @@ Binary_Tree * parse_E(Binary_Tree *&root, TokenNode *HeadToken)
 			P->right = parse_E(P,HeadToken);
 			P->left = sun;
 			P->data = c;
+			HeadToken = HeadToken->next;
 			sun = P;
 		}
-		c = str[i];
+		c = HeadToken->This.gettext()[0];
 	}
 	if (c == '\0')
 		return sun;
@@ -237,7 +243,7 @@ void post(Binary_Tree * &root, stack<int> s)
 	}
 }
 //返回算术表达式语法分析的结果
-int BinaryParse(TokenNode *HeadToken)
+int BinaryParse(TokenNode * &HeadToken)
 {
 	stack<int> s; //计算算术表达式的栈
 	i = 0;
@@ -559,7 +565,7 @@ void Block_run(Variable_tag *First)
 	string text = Lexer_out.peek(0).gettext();
 	if (text == "\\n")
 		Lexer_out.read();/* 读取换行符号\n*/
-	Block *Block_Expression;
+	Block *Block_Expression=new Block;
 	/*
 		如果没有读入过，即L将Token 读入到语句块的链表中,
 	*/
@@ -570,28 +576,30 @@ void Block_run(Variable_tag *First)
 			Lexer_out.read();//读取"{"
 			Block *Dirty = new Block;
 			Block_Expression = Dirty;
+			Dirty->loading = true;
 			while (Lexer_out.read().gettext() != "}")
 			{
-				Dirty->loading = true;
+				Block *Dirtysun = new Block;
 				//如果是赋值表达式
 				if (Lexer_out.peek(1).gettext() == "=")
 				{
 					StatementLink *Link = new StatementLink;
-					Dirty->type = ASSIGN_EXPRESSION;
+					Dirtysun->type = ASSIGN_EXPRESSION;
+					Link->head = new Block_Token;
 					Link->head->This = Lexer_out.read();
-					Link->head = Link->head->next;
 					while (Lexer_out.peek(0).gettext() != "\\n")
 					{
-						Token Site = Lexer_out.read();
-						Link->head->This = Site;
-						Link->head->next = NULL;
+						Block_Token *Site = new Block_Token;
+						Site->This = Lexer_out.read();
+						Site->next = NULL;
+						Link->head->next=Site;
 						Link->head = Link->head->next;
 					}
 					if (Lexer_out.peek(0).gettext() != "\\n")
 						Lexer_out.read();//读取\n
-					Dirty->Thestatementlist = *Link;
+					Dirtysun->Thestatementlist = *Link;
+					Dirty = Dirtysun;
 					Dirty = Dirty->next;
-					Dirty->next = NULL;
 				}
 
 			}
@@ -607,7 +615,7 @@ void Block_run(Variable_tag *First)
 		{
 			Assign_Tree *Assign = new Assign_Tree;
 			Assign->Sign = '=';
-			Assign->right = *Search(Block_Expression->Thestatementlist.head->This.gettext(),First);
+			Assign->right = *Search(Block_Expression->Thestatementlist.head->This.gettext() , First);
 			//读取赋值语句的"="的后面部分
 			TokenNode *HeadToken = new TokenNode;
 			TokenNode *SiteToken = new TokenNode;
@@ -617,7 +625,8 @@ void Block_run(Variable_tag *First)
 				SiteToken->This = Block_Expression->Thestatementlist.head->This;
 				SiteToken= SiteToken->next;
 			}
-			Assign->left = BinaryParse(HeadToken);
+			Assign->left = BinaryParse(SiteToken);
+			Assign->right.value.u.int_vlaue = Assign->left;
 		}
 	}
 
