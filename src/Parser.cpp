@@ -98,6 +98,8 @@ Variable_tag *Search(string text, Variable_tag *First)
 	{
 		if (test->name == text)
 			return test;
+		else
+			test = test->next;
 	}
 }
 /*
@@ -564,73 +566,88 @@ bool  Bool_Expreesion(Variable_tag *First)
 */
 
 //执行语句块
-void Block_run(Variable_tag *First)
+void Block_Run(Variable_tag *First)
 {
 	string text = Lexer_out.peek(0).gettext();
 	if (text == "\\n")
 		Lexer_out.read();/* 读取换行符号\n*/
-	Block *Block_Expression=new Block;
+	Block *Block_ExpressionHead = new Block;
+	Block *Block_Expression = new Block;
+	Block_Expression = Block_ExpressionHead;
 	/*
 		如果没有读入过，即L将Token 读入到语句块的链表中,
 	*/
-	if (Block_Expression->loading != true)
+	if (Block_ExpressionHead->loading != true)
 	{
 		if (Lexer_out.peek(0).gettext() == "{")
 		{
+			Block_ExpressionHead->loading = true;
 			Lexer_out.read();//读取"{"
-			Block *Dirty = new Block;
-			Block_Expression = Dirty;
-			Dirty->loading = true;
-			while (Lexer_out.read().gettext() != "}")
+			text = Lexer_out.peek(0).gettext();
+			if (text == "\\n")
+				Lexer_out.read();/* 读取换行符号\n*/
+			while (Lexer_out.peek(0).gettext() != "}")
 			{
-				Block *Dirtysun = new Block;
-				//如果是赋值表达式
 				if (Lexer_out.peek(1).gettext() == "=")
 				{
-					StatementLink *Link = new StatementLink;
-					Dirtysun->type = ASSIGN_EXPRESSION;
-					Link->head = new Block_Token;
-					Link->head->This = Lexer_out.read();
+					Block *Dirty = new Block;
+					Block_Expression->next = Dirty;
+					Block_Expression = Dirty;
+					Block_Expression->type = ASSIGN_EXPRESSION;
+					StatementLink * Link = new StatementLink;
+					StatementLink *Site = new StatementLink;
+					Site = Link;
+					Site->This = Lexer_out.read();
 					while (Lexer_out.peek(0).gettext() != "\\n")
 					{
-						Block_Token *Site = new Block_Token;
-						Site->This = Lexer_out.read();
-						Site->next = NULL;
-						Link->head->next=Site;
-						Link->head = Link->head->next;
+						StatementLink * built = new StatementLink;
+						built->This = Lexer_out.read();
+						Site->next = built;
+						Site = built;
 					}
-					if (Lexer_out.peek(0).gettext() != "\\n")
+					Site->next = NULL;
+					if (Lexer_out.peek(0).gettext() == "\\n")
 						Lexer_out.read();//读取\n
-					Dirtysun->Thestatementlist = *Link;
-					Dirty = Dirtysun;
-					Dirty = Dirty->next;
+					Block_Expression->Thestatementlist = Link;
 				}
-
 			}
-			Lexer_out.read();//读取"}"
 		}
+		Block_Expression->next = NULL;
+		Lexer_out.read();//读取"}"
 	}
 	/*
 		执行语句块
 	*/
-	while (Block_Expression != NULL)
+	Block *Block_run = new Block;
+	Block_run = Block_ExpressionHead->next;
+	while (Block_Expression)
 	{
-		if (Block_Expression->type = ASSIGN_EXPRESSION)//即赋值语句
+		if (Block_run->type = ASSIGN_EXPRESSION)//即赋值语句
 		{
 			Assign_Tree *Assign = new Assign_Tree;
-			Assign->Sign = '=';
-			Assign->right = *Search(Block_Expression->Thestatementlist.head->This.gettext() , First);
+			Assign->right = *Search(Block_run->Thestatementlist->This.gettext() , First);
+			//读取到"="处
+			while (Block_run->Thestatementlist->This.gettext() != "=")
+			{
+				Block_run->Thestatementlist->This = Block_run->Thestatementlist->next->This;
+			}
+			Assign->Sign = Block_run->Thestatementlist->This.gettext()[0];
+			Block_run->Thestatementlist->This = Block_run->Thestatementlist->next->This;
 			//读取赋值语句的"="的后面部分
 			TokenNode *HeadToken = new TokenNode;
-			TokenNode *SiteToken = new TokenNode;
-			SiteToken = HeadToken;
-			while (Block_Expression->Thestatementlist.head->next != NULL)
+			TokenNode *Lyang = new TokenNode;
+			Lyang = HeadToken;
+			while (Block_run->Thestatementlist->next != NULL)
 			{
-				SiteToken->This = Block_Expression->Thestatementlist.head->This;
-				SiteToken= SiteToken->next;
+				TokenNode *Statue = new TokenNode;
+				Statue->This = Block_run->Thestatementlist->This;
+				Lyang->next= Statue;
+				Lyang = Statue;
+				Block_run->Thestatementlist->This = Block_run->Thestatementlist->next->This;
+				
 			}
-			Assign->left = BinaryParse(SiteToken);
-			Assign->right.value.u.int_vlaue = Assign->left;
+			Assign->left = BinaryParse(HeadToken);
+			Assign->right.value.u.int_vlaue = Assign->left;//进行赋值操作
 		}
 	}
 
@@ -682,7 +699,7 @@ void IswhatKeyword(string text, Variable_tag *First)
 				if (!Bool_Expreesion(First))
 					break;
 				else
-					Block_run(First);//否则执行语句块
+					Block_Run(First);//否则执行语句块
 			}
 		}
 	}
