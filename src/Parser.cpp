@@ -122,8 +122,12 @@ Binary_Tree * parse_E(Binary_Tree *&root, TokenNode *&HeadToken,Variable_tag *Fi
 //因子
 Binary_Tree * parse_F(Binary_Tree *&sun, TokenNode *&HeadToken, Variable_tag *First)
 {
+	char c;
 	Binary_Tree *L = new Binary_Tree;
-	char c = Search(HeadToken->This.gettext(), First)->value.u.int_vlaue + '0';
+	if (HeadToken->This.isnumber())
+		c = HeadToken->This.getnumber() + '0';
+	else
+		c = Search(HeadToken->This.gettext(), First)->value.u.int_vlaue + '0';
 	if (isdigit(c)){
 		i++;
 		L->data = c;
@@ -251,16 +255,26 @@ void post(Binary_Tree * &root)
 		}
 	}
 }
+//清空算术表达式所用的栈
+void Empty(stack <int >s)
+{
+	while (!s.empty())
+	{
+		s.pop();
+	}
+}
 //返回算术表达式语法分析的结果
 int BinaryParse(TokenNode * &HeadToken, Variable_tag *First)
 {
-	
+	int Adsum;
 	i = 0;
 	Binary_Tree * L = new Binary_Tree;
 	Binary_Tree *sun = new Binary_Tree;
 	L = parse_E(sun,HeadToken,First);
 	post(L);
-	return s.top()-'0';
+	Adsum = s.top() - '0';
+	Empty(s);
+	return Adsum;
 }
 /*
 	条件判断表达式
@@ -623,7 +637,7 @@ void Block_Run(Variable_tag *First)
 	*/
 	Block *Block_run = new Block;
 	Block_run = Block_ExpressionHead->next;
-	while (Block_Expression)
+	while (Block_run)
 	{
 		if (Block_run->type = ASSIGN_EXPRESSION)//即赋值语句
 		{
@@ -651,6 +665,7 @@ void Block_Run(Variable_tag *First)
 			Lyang->next = NULL;
 			Assign->left = BinaryParse(HeadToken->next,First);
 			Assign->right.value.u.int_vlaue = Assign->left;//进行赋值操作
+			Block_run= Block_run->next;
 		}
 	}
 
