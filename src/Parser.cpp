@@ -648,7 +648,7 @@ void Block_Run(Variable_tag *First)
 			{
 				Block_run->Thestatementlist = Block_run->Thestatementlist->next;
 			}
-			Assign->Sign = Block_run->Thestatementlist->This.gettext()[0];
+			Assign->Sign = Block_run->Thestatementlist->This.gettext()[0]; 
 			Block_run->Thestatementlist = Block_run->Thestatementlist->next;
 			//读取赋值语句的"="的后面部分
 			TokenNode *HeadToken = new TokenNode;
