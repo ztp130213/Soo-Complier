@@ -700,6 +700,8 @@ bool IsKeyword(string s)
 		return true;
 	else if (s == "print")
 		return true;
+	else if (s == "if")
+		return true;
 	else
 		return false;
 }
@@ -749,6 +751,24 @@ void IswhatKeyword(string text, Variable_tag *First)
 		}
 		Lexer_out.read();//读取“）”;
 	}
+	else if (text == "if")//关键字是if
+	{
+		Lexer_out.read();
+		string test = Lexer_out.peek(0).gettext();
+		if (test == "(")
+		{
+			Lexer_out.read();
+			//得到判断表达式的字符流
+			Expreesion_Node *Bool_ExpreesionNode = new Expreesion_Node;
+			Get_BoolExpression(Bool_ExpreesionNode);//读取（）里的判断表达式
+			Block *Block_ExpressionHead = new Block;
+			GetBlockNode(Block_ExpressionHead);
+			if (Bool_Expreesion(First, Bool_ExpreesionNode))
+				Block_Run(First, Block_ExpressionHead);//否则执行语句块
+		}
+		if (Lexer_out.peek(0).gettext() == "\\n")
+			Lexer_out.read();//读取\n
+		}
 }
 //语法分析
 void Parser()
@@ -791,5 +811,6 @@ int main()
 		Lexer_out.readline(line, linenumber);
 	}
 	Parser();
+	system("pause");
 	return 0;
 }
