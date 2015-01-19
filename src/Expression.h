@@ -6,7 +6,7 @@ struct Assign_Tree
 {
 	char Sign;
 	int left;
-	Variable_tag right;
+	Variable_tag *right;
 };
 /*
 ±Ì¥Ô Ω
