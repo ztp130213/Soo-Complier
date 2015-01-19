@@ -635,37 +635,37 @@ void Block_Run(Variable_tag *First)
 	/*
 		执行语句块
 	*/
-	Block *Block_run = new Block;
-	Block_run = Block_ExpressionHead->next;
-	while (Block_run)
+	Block Block_run;
+	Block_run =*Block_ExpressionHead->next;
+	while (Block_run.Thestatementlist!=NULL)
 	{
-		if (Block_run->type = ASSIGN_EXPRESSION)//即赋值语句
+		if (Block_run.type = ASSIGN_EXPRESSION)//即赋值语句
 		{
 			Assign_Tree *Assign = new Assign_Tree;
-			Assign->right = *Search(Block_run->Thestatementlist->This.gettext() , First);
+			Assign->right = *Search(Block_run.Thestatementlist->This.gettext() , First);
 			//读取到"="处
-			while (Block_run->Thestatementlist->This.gettext() != "=")
+			while (Block_run.Thestatementlist->This.gettext() != "=")
 			{
-				Block_run->Thestatementlist = Block_run->Thestatementlist->next;
+				Block_run.Thestatementlist = Block_run.Thestatementlist->next;
 			}
-			Assign->Sign = Block_run->Thestatementlist->This.gettext()[0]; 
-			Block_run->Thestatementlist = Block_run->Thestatementlist->next;
+			Assign->Sign = Block_run.Thestatementlist->This.gettext()[0]; 
+			Block_run.Thestatementlist = Block_run.Thestatementlist->next;
 			//读取赋值语句的"="的后面部分
 			TokenNode *HeadToken = new TokenNode;
 			TokenNode *Lyang = new TokenNode;
 			Lyang = HeadToken;
-			while (Block_run->Thestatementlist!= NULL)
+			while (Block_run.Thestatementlist!= NULL)
 			{
 				TokenNode *Statue = new TokenNode;
-				Statue->This = Block_run->Thestatementlist->This;
+				Statue->This = Block_run.Thestatementlist->This;
 				Lyang->next= Statue;
 				Lyang = Statue;
-				Block_run->Thestatementlist = Block_run->Thestatementlist->next;
+				Block_run.Thestatementlist = Block_run.Thestatementlist->next;
 			}
 			Lyang->next = NULL;
 			Assign->left = BinaryParse(HeadToken->next,First);
 			Assign->right.value.u.int_vlaue = Assign->left;//进行赋值操作
-			Block_run= Block_run->next;
+			Block_run= *Block_run.next;
 		}
 	}
 
