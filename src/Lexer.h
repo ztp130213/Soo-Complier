@@ -1,5 +1,9 @@
 #ifndef _LEXERHEAD_H_
 #define _LEXERHEAD_H_
+/*
+	词法分析 ，
+	利用了boost库中的正则表达式
+*/
 #include <iostream>
 #include <string>
 #include <queue>
@@ -54,7 +58,7 @@ public:
 };
 Token StopEOF(-1);
 
-queue<Token> Queue;
+queue<Token> Queue;//词法分析的结果存放在Queue中
 //词法分析
 class Lexer
 {
