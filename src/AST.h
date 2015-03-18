@@ -9,10 +9,11 @@ using namespace std;
 class AST
 {
 public:
-	void If_Else(queue<Token> Token );//编译器中if else结构
+	void If_Else();//编译器中if else结构的树
+	void While();//编译器中while结构的树
 };
-void AST::If_Else(queue<Token> Token)
+void AST::If_Else()
 {
-
+	
 }
 #endif
