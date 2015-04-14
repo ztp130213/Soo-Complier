@@ -6,6 +6,10 @@
 #include <queue>
 #include "Lexer.h"
 using namespace std;
+struct If_Else
+{
+
+};
 class AST
 {
 public:
