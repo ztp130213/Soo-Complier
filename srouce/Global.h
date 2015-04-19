@@ -9,4 +9,9 @@ enum Variable_Type
 	Float,
 	String
 };
+//Óï¾äÀàĞÍ
+enum Ex_Statement
+{
+
+};
 #endif
