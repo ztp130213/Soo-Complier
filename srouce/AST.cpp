@@ -14,6 +14,14 @@ void AST::AST_Variabledec()
 		float values;
 		char * values;//string 类型
 	};
+	//构造语法分析树
+	Tree AST_VariabledecTree;
+	AST_VariabledecTree.Root.Sign = "Variabledec";
+	AST_VariabledecTree.Root.token = NULL;
+	AST_VariabledecTree.Left->Sign = "dec";
+	AST_VariabledecTree.Left->token = NULL;
+	AST_VariabledecTree.Left->Left->Sign = "type";
+	AST_VariabledecTree.Left->Left->
 }
 //算术运算
 void AST::AST_Arithmetic()

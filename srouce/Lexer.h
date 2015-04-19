@@ -26,6 +26,13 @@ public:
 	bool Token_IsId();
 	string Token_GetText();
 	int Token_GetNumber();
+	bool operator!=(Token & example)
+	{
+		if (LineNumber != example.LineNumber)
+			return false;
+		else
+			return true;
+	}
 };
 Token StopEOF(-1);
 
@@ -40,6 +47,7 @@ public:
 	Token Lexer_Read();//读取一个字符
 	Token Lexer_Peek(int n);//预读下一个字符
 	void Lexer_Readline(string &line, int linenumber);//读取一行，进行解析
+	queue<Token> Lexer_ReturnQueue();//返回词法分析的结果
 };
 inline Lexer & Instance()
 {

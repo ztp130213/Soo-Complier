@@ -127,3 +127,8 @@ void Lexer::Lexer_Readline(string &line, int linenumber)
 		Queue.push(Newline);
 	}
 }
+//返回词法分析的结果
+queue <Token> Lexer::Lexer_ReturnQueue()
+{
+	return Queue;
+}

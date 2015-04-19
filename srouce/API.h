@@ -1,40 +1,20 @@
-#include "API.h"
-#include <iostream>
-#include <fstream>
-#include <string>
-using namespace std;
-
-void API::API_Welcome()
+#pragma once 
+#ifndef _API_H
+#define _API_H
+#include "Lexer.h"
+class API
 {
-	string command;
-	cout << "       Welcome to Soo       " << endl;
-	cout << "            by:Leviathan1995" << endl;
-	cout << "File or Input: f or i       " << endl;
-	cout << "Please select:              " << endl;
-	cin >> command;
-	if (command == "f")
-		API_ReadFile();
-	else
-		API_ShellInput();
-}
-
-//从文件中读取程序
-void API::API_ReadFile()
+public:
+	static API & Instance();
+	queue<Token> Queue;							//词法分析的结果
+	void API_Welcome();							//欢迎程序
+	void API_ReadFile();						//从文件中读取程序
+	void API_ShellInput();						//控制台输入程序
+	void API_Parser(queue<Token> Queue);		//语法分析
+};
+inline API &API::Instance()
 {
-	int LineNumber = 0;
-	Token token;
-	ifstream Infile("code.txt");
-	string Line;
-	while (getline(Infile, Line))
-	{
-		LineNumber++;
-		Lexer::Instance().Lexer_Readline(Line, LineNumber);
-	}
-	API::Instance().API_Parser();
+	API API_Instance;
+	return API_Instance;
 }
-
-//进行语法分析
-void API::API_Parser()
-{
-	P
-}
+#endif
