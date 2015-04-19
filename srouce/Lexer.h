@@ -20,7 +20,7 @@ public:
 	string Text;	//нд╠╬
 	Token();
 	Token(int line);
-	Token(int line,string &text, string Id_or_Number);
+	Token(int line, string &text, string Id_or_Number);
 	int Token_GetLinenumber();
 	bool Token_IsNumber();
 	bool Token_IsId();

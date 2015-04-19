@@ -1,7 +1,7 @@
 #include "Lexer.h"
 using namespace std;
 /*
-	字符流单元类成员函数
+字符流单元类成员函数
 */
 Token::Token()
 {
@@ -48,7 +48,7 @@ int Token::Token_GetNumber()
 	return number;
 }
 /*
-	语法分析类成员函数
+语法分析类成员函数
 */
 Lexer::Lexer()
 {
