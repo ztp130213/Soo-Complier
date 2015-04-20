@@ -1,0 +1,7 @@
+i=0
+sum=0
+if(i<3)
+{
+sum=sum+10
+}
+print(sum)
