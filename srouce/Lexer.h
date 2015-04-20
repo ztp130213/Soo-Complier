@@ -40,7 +40,7 @@ Token StopEOF(-1);
 class Lexer
 {
 public:
-	static Lexer & Instance(); //实例化词法分析
+	static Lexer & Lexer_Instance(); //实例化词法分析
 	queue<Token> Queue; //词法分析的结果
 	bool HasMore;
 	Lexer();
@@ -49,7 +49,7 @@ public:
 	void Lexer_Readline(string &line, int linenumber);//读取一行，进行解析
 	queue<Token> Lexer_ReturnQueue();//返回词法分析的结果
 };
-inline Lexer & Instance()
+inline Lexer & Lexer_Instance()
 {
 	Lexer Lexer_out;
 	return Lexer_out;

@@ -1,6 +1,7 @@
 #pragma once
 #ifndef _AST_H
 #define _AST_H
+#include "Global.h"
 #include "Lexer.h"
 /*
 	³éÏóÓï·¨·ÖÎöÊ÷
@@ -30,4 +31,5 @@ struct Tree
 	Tree_Node * Left;
 	Tree_Node * Right;
 };
+
 #endif

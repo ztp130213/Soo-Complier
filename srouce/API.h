@@ -2,9 +2,19 @@
 #ifndef _API_H
 #define _API_H
 #include "Lexer.h"
+#include <string>
+using namespace std;
 class API
 {
 public:
+	/*
+		工具方法
+	*/
+	int String2Int(string str);
+	string Int2String(int number);
+	/*
+		主程类
+	*/
 	static API & Instance();
 	queue<Token> Queue;							//词法分析的结果
 	void API_Welcome();							//欢迎程序

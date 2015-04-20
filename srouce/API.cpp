@@ -1,10 +1,21 @@
 #include "API.h"
 #include "Parser.h"
+#include <strstream>
 #include <iostream>
 #include <fstream>
 #include <string>
 using namespace std;
+//string 转int
+int API::String2Int(string str)
+{
+	
+}
+//int 转string
+string API::Int2String(int number)
+{
 
+}
+//欢迎界面
 void API::API_Welcome()
 {
 	string command;
@@ -29,14 +40,14 @@ void API::API_ReadFile()
 	while (getline(Infile, Line))
 	{
 		LineNumber++;
-		Lexer::Instance().Lexer_Readline(Line, LineNumber);
+		Lexer::Lexer_Instance().Lexer_Readline(Line, LineNumber);
 	}
-	Queue = Lexer::Instance().Lexer_ReturnQueue();
+	Queue = Lexer::Lexer_Instance().Lexer_ReturnQueue();
 	API::Instance().API_Parser(Queue);
 }
 
 //进行语法分析
 void API::API_Parser(queue<Token> Queue)
 {
-	Parser::Instance().Parsering(Queue);
+	Parser::Parser_Instance().Parsering(Queue);
 }
