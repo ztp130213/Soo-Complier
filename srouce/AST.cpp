@@ -3,7 +3,7 @@
 #include <string>
 using namespace std;
 //变量声明或定义
-void AST::AST_Variabledec()
+void AST::AST_Variabledec(Variabledec variable)
 {
 	
 	//构造语法分析树

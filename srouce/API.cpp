@@ -1,6 +1,6 @@
 #include "API.h"
 #include "Parser.h"
-#include <strstream>
+#include <sstream>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -8,12 +8,28 @@ using namespace std;
 //string 转int
 int API::String2Int(string str)
 {
-	
+	int number = atoi(str.c_str());
+	return number;
 }
 //int 转string
 string API::Int2String(int number)
 {
-
+	stringstream ss;
+	string str;
+	ss << number;
+	ss >> str;
+	return str;
+}
+//string 转float
+float API::String2Float(string str)
+{
+	float number = atof(str.c_str());
+}
+//stringn 转char *
+const char* API::String2CharPlus(string str)
+{
+	const char * Char = str.c_str();
+	return Char;
 }
 //欢迎界面
 void API::API_Welcome()

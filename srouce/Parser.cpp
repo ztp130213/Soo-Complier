@@ -2,6 +2,7 @@
 #include "AST.h"
 #include "Error.h"
 #include "Global.h"
+#include "API.h"
 using namespace std;
 void Parser::Parsering(queue<Token> Queue)
 {
@@ -9,8 +10,10 @@ void Parser::Parsering(queue<Token> Queue)
 	while (Lexer::Lexer_Instance().Lexer_Read() != StopEOF)
 	{
 		token = Lexer::Lexer_Instance().Lexer_Peek(0);
-		if (token.Token_GetText() == "dec") //声明或定义语句
+		if (token.Token_GetText() == "dec") //声明变量语句
 			Parser_Dec();
+		if (token.Token_GetText() == "def") //定义变量语句
+			Parser_Def();
 		if (token.Token_GetText() == "if")  //if else 语句块
 			Parser_If();
 
@@ -38,16 +41,5 @@ void Parser::Parser_Dec()
 	}
 	string name = Lexer::Lexer_Instance().Lexer_Read().Token_GetText();
 	NewVariable.variable_name = name;
-	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "=") //为定义变量语句
-	{
-		Lexer::Lexer_Instance().Lexer_Read();//读取"="
-		switch (NewVariable.variable_type)
-		{
-		case Int:
-			NewVariable.Values.Intvalue = Lexer::Lexer_Instance().Lexer_Read().Token_GetText();
-		default:
-			break;
-		}
-	}
-		
+	AST::AST_Instance().AST_Variabledec(NewVariable);
 }

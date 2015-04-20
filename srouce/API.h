@@ -12,6 +12,8 @@ public:
 	*/
 	int String2Int(string str);
 	string Int2String(int number);
+	float String2Float(string str);
+	const char * String2CharPlus(string str);
 	/*
 		Ö÷³ÌÀà
 	*/

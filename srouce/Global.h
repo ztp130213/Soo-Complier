@@ -28,5 +28,20 @@ typedef struct Variabledec
 		char * Strvalues;
 	}Values;
 };
+//树节点
+struct Tree_Node
+{
+	Token token;//结点的值
+	string Sign;//结点的标志
+	Tree_Node * Left;
+	Tree_Node * Right;
 
+};
+//语法树
+struct Tree
+{
+	Tree_Node Root;
+	Tree_Node * Left;
+	Tree_Node * Right;
+};
 #endif
