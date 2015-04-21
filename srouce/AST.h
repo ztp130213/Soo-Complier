@@ -10,8 +10,8 @@ class AST
 {
 public:
 	static AST & AST_Instance();
-	void AST_Variabledec(Variabledec variable);	//变量声明
-	void AST_Variabledef();
+	void AST_Variabledec(Variable variable);	//变量的声明
+	void AST_Variabledef();						//变量的定义
 	void AST_Assign();							//赋值语句
 	void AST_If_Else();							//if_else 类型语句
 	void AST_Arithmetic();						//算术运算

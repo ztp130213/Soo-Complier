@@ -16,7 +16,7 @@ enum Ex_Statement
 
 };
 //变量结构体
-typedef struct Variabledec
+typedef struct Variable
 {
 	Variable_Type variable_type;//变量类型
 	string variable_name;		//变量名字
@@ -31,7 +31,7 @@ typedef struct Variabledec
 //树节点
 struct Tree_Node
 {
-	Token token;//结点的值
+	string token;//结点的值
 	string Sign;//结点的标志
 	Tree_Node * Left;
 	Tree_Node * Right;

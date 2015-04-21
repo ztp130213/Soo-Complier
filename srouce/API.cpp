@@ -31,6 +31,14 @@ const char* API::String2CharPlus(string str)
 	const char * Char = str.c_str();
 	return Char;
 }
+//查询变量是否存在
+bool API::API_VariableFind(string variablename)
+{
+	for (auto i = API::Instance().Pra_Variable.begin(); i != API::Instance().Pra_Variable.end(); i++)
+	{
+		if (variablename==i)
+	}
+}
 //欢迎界面
 void API::API_Welcome()
 {
