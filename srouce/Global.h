@@ -24,8 +24,8 @@ typedef struct Variable
 	{
 		int Intvalue;
 		char Charvalue;
-		float Floatvalues;
-		char * Strvalues;
+		float Floatvalue;
+		char * Strvalue;
 	}Values;
 };
 //Ê÷½Úµã

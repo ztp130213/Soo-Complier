@@ -66,7 +66,8 @@ void Parser::Parser_Def()
 {
 	Lexer::Lexer_Instance().Lexer_Read(); //读取def
 	Variable variable;
-	string variablename = Lexer::Lexer_Instance().Lexer_Read().Token_GetText(); //获取变量名
+	Token token = Lexer::Lexer_Instance().Lexer_Read();
+	string variablename = token.Token_GetText(); //获取变量名
 	for (auto i = API::Instance().Pra_Variable.begin(); i != API::Instance().Pra_Variable.end(); i++)
 	{
 		if (variablename == i->variable_name)
@@ -75,6 +76,30 @@ void Parser::Parser_Def()
 			break;
 		}
 	}
-	if (API_VariableFind(variablename))
+	if (API::Instance().API_VariableFind(variablename)) //查找这个变量,if存在
+	{
+		variable = API::Instance().API_ReturnVar(variablename);
+		switch (variable.variable_type)
+		{
+		case Int:
+			variable.Values.Intvalue = API::Instance().String2Int(Lexer::Lexer_Instance().Lexer_Read().Token_GetText());
+			break;
+		case Float:
+			variable.Values.Floatvalue = API::Instance().String2Float(Lexer::Lexer_Instance().Lexer_Read().Token_GetText());
+			break;
+		case Char:
+			variable.Values.Charvalue = API::Instance().String2Int(Lexer::Lexer_Instance().Lexer_Read().Token_GetText[0]);
+			break;
+		case String:
+			variable.Values.Strvalue = API::Instance().String2CharPlus(Lexer::Lexer_Instance().Lexer_Read().Token_GetText());
+			break;
+
+		}
+	}
+	else  //变量不存在
+	{
+		Error error(token.Token_GetLinenumber, "Variable", "declaration", "no such variable");
+		error.ThrowError();
+	}
 
 }

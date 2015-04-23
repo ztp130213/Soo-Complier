@@ -26,18 +26,24 @@ float API::String2Float(string str)
 	float number = atof(str.c_str());
 }
 //stringn 转char *
-const char* API::String2CharPlus(string str)
+char* API::String2CharPlus(string str)
 {
-	const char * Char = str.c_str();
-	return Char;
+	char * Char = str.data();
+
 }
 //查询变量是否存在
 bool API::API_VariableFind(string variablename)
 {
+	bool Find = false;
 	for (auto i = API::Instance().Pra_Variable.begin(); i != API::Instance().Pra_Variable.end(); i++)
 	{
-		if (variablename==i)
+		if (variablename == i->variable_name)
+		{
+			Find = true;
+			break;
+		}
 	}
+	return Find;
 }
 //欢迎界面
 void API::API_Welcome()

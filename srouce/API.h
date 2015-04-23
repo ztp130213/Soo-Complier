@@ -13,7 +13,7 @@ public:
 	int String2Int(string str);
 	string Int2String(int number);
 	float String2Float(string str);
-	const char * String2CharPlus(string str);
+	char * String2CharPlus(string str);
 	/*
 		主程类
 	*/
@@ -23,7 +23,8 @@ public:
 	void API_ReadFile();						//从文件中读取程序
 	void API_ShellInput();						//控制台输入程序
 	void API_Parser(queue<Token> Queue);		//语法分析
-	bool API_VariableFind(string variable);		//在 Pra_Variable 中查找变量		
+	bool API_VariableFind(string variablename);	//在 Pra_Variable 中查找变量		
+	Variable API_ReturnVar(string variablename);//返回查找的变量
 	/*
 		数据存储
 	*/
