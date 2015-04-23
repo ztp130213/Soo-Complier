@@ -28,8 +28,9 @@ float API::String2Float(string str)
 //stringn 转char *
 char* API::String2CharPlus(string str)
 {
-	char * Char = str.data();
-
+	char * Char = new char[str.size()];
+	strcpy(Char, str.data());
+	return Char;
 }
 //查询变量是否存在
 bool API::API_VariableFind(string variablename)

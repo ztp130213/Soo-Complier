@@ -76,6 +76,13 @@ void Parser::Parser_Def()
 			break;
 		}
 	}
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() != "=")
+	{
+		Error error(token.Token_GetLinenumber, "Variable", "declaration", "need a '='");
+		error.ThrowError();
+	}
+	else
+		Lexer::Lexer_Instance().Lexer_Read(); //读取“=”
 	if (API::Instance().API_VariableFind(variablename)) //查找这个变量,if存在
 	{
 		variable = API::Instance().API_ReturnVar(variablename);
@@ -101,5 +108,5 @@ void Parser::Parser_Def()
 		Error error(token.Token_GetLinenumber, "Variable", "declaration", "no such variable");
 		error.ThrowError();
 	}
-
+	AST::AST_Instance().AST_Variabledef(variable); //构建语法分析树
 }
