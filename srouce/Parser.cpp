@@ -9,13 +9,38 @@ void Parser::Parsering(queue<Token> Queue)
 	Token token;
 	while (Lexer::Lexer_Instance().Lexer_Read() != StopEOF)
 	{
-		token = Lexer::Lexer_Instance().Lexer_Peek(0);
-		if (token.Token_GetText() == "Var")		//变量声明或定义区
-			Parser_Var();
-		if (token.Token_GetText() == "Program")	//程序区
-			Parser_Pra();
-
+		External_Dec(Global);
 	}
+}
+//解析外部声明
+void Parser::External_Dec(External state)
+{
+	if (!Type_Sign())
+	{
+		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Type", "declaration", "no such type");
+		error.ThrowError();
+	}
+}
+//解析类型符号
+bool Parser::Type_Sign()
+{
+	bool Type_Find = false;
+	switch (API::Instance().Token2Type(Lexer::Lexer_Instance().Lexer_Read()))
+	{
+	case Char:
+		Type_Find = true;
+	case Int:
+		Type_Find = true;
+	case Float:
+		Type_Find = true;
+	case Void:
+		Type_Find = true;
+	case String:
+		Type_Find = true;
+	default:
+		break;
+	}
+	return Type_Find;
 }
 //变量声明或定义区
 void Parser::Parser_Var()
@@ -109,4 +134,9 @@ void Parser::Parser_Def()
 		error.ThrowError();
 	}
 	AST::AST_Instance().AST_Variabledef(variable); //构建语法分析树
+}
+//程序区段
+void Parser::Parser_Pra()
+{
+
 }

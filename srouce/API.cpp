@@ -32,6 +32,23 @@ char* API::String2CharPlus(string str)
 	strcpy(Char, str.data());
 	return Char;
 }
+//Token 转 Data_Type
+Data_Type API::Token2Type(Token token)
+{
+	if (token.Token_GetText() == "int")
+		return Int;
+	if (token.Token_GetText() == "char")
+		return Char;
+	if (token.Token_GetText() == "float")
+		return Float;
+	if (token.Token_GetText() == "void")
+		return Void;
+	if (token.Token_GetText() == "string")
+		return String;
+}
+
+
+
 //查询变量是否存在
 bool API::API_VariableFind(string variablename)
 {
