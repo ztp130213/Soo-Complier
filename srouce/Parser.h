@@ -20,15 +20,14 @@ public:
 	void Init();						//初值符
 	void Declarator_Postfix();			//声明符号后缀
 	void ParameterList();				//参数列表
-	//
-	bool Is_Keyword(Token token);		//是否为关键字
-	void Parser_Var();					//变量声明或定义区段
-	void Parser_Pra();					//程序区段
-	void Parser_Math();					//数学运算式
-	void Parser_Keyword();				//关键字解析
-	void Parser_Dec();					//变量声明
-	void Parser_Def();					//变量定义
-	void Parser_If();					//if else语句
+	void Compound_Statement();          //复合语句
+	void Statement();					//语句
+	void Statement_If();				//If语句
+	void Statement_While();				//While语句
+	void Statement_For();				//For语句
+	void Statement_Return();			//Return语句
+	void Statement_Continue();			//Continue语句
+	void Statement_Break();				//Break语句
 };
 inline Parser & Parser::Parser_Instance()
 {

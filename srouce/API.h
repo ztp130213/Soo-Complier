@@ -15,7 +15,8 @@ public:
 	string Int2String(int number);
 	float String2Float(string str);
 	char * String2CharPlus(string str);
-	Data_Type Token2Type(Token token);
+	Data_Type Token2Type(Token token);  //token 转 数据类型
+	Ex_Statement Token2Statement(Token token);//token 转语句类型
 	/*
 		主程类
 	*/
@@ -25,12 +26,6 @@ public:
 	void API_ReadFile();						//从文件中读取程序
 	void API_ShellInput();						//控制台输入程序
 	void API_Parser(queue<Token> Queue);		//语法分析
-	bool API_VariableFind(string variablename);	//在 Pra_Variable 中查找变量		
-	Variable API_ReturnVar(string variablename);//返回查找的变量
-	/*
-		数据存储
-	*/
-	vector<Variable> Pra_Variable; //全局变量
 };
 inline API &API::Instance()
 {

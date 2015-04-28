@@ -46,22 +46,23 @@ Data_Type API::Token2Type(Token token)
 	if (token.Token_GetText() == "string")
 		return String;
 }
-
-
-
-//查询变量是否存在
-bool API::API_VariableFind(string variablename)
+//Token 转 Ex_Statement
+Ex_Statement API::Token2Statement(Token token)
 {
-	bool Find = false;
-	for (auto i = API::Instance().Pra_Variable.begin(); i != API::Instance().Pra_Variable.end(); i++)
-	{
-		if (variablename == i->variable_name)
-		{
-			Find = true;
-			break;
-		}
-	}
-	return Find;
+	if (token.Token_GetText() == "{")
+		return Statement_Start;
+	if (token.Token_GetText() == "if")
+		return If_Statement;
+	if (token.Token_GetText() == "for")
+		return For_Statement;
+	if (token.Token_GetText() == "while")
+		return While_Statement;
+	if (token.Token_GetText() == "break")
+		return Break_Statement;
+	if (token.Token_GetText() == "continue")
+		return Continue_Statement;
+	if (token.Token_GetText() == "return")
+		return Return_Statement;
 }
 //欢迎界面
 void API::API_Welcome()

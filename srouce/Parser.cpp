@@ -12,7 +12,7 @@ void Parser::Parsering(queue<Token> Queue)
 		External_Dec(Global);
 	}
 }
-//解析外部声明
+//解析 声明
 void Parser::External_Dec(External state)
 {
 	if (!Type_Sign()) //类型判断
@@ -28,7 +28,7 @@ void Parser::External_Dec(External state)
 	while (1) //逐个分析声明或函数定义
 	{
 		Declarator();
-		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "{")
+		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "{") // 函数定义
 		{
 			if (state == Local)
 			{
@@ -48,7 +48,7 @@ void Parser::External_Dec(External state)
 		}
 	}
 }
-//声明符
+//声明 标识符
 void Parser::Declarator()
 {
 	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_IsId)
@@ -57,25 +57,97 @@ void Parser::Declarator()
 	}
 	else
 	{
-		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "IDENT", "declaration", "must be a id");
+		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "IDENT", "declaration", "need input a ID");
 		error.ThrowError();
 	}
-	Declarator_Postfix();
+	Declarator_Postfix(); //声明符后缀
 }
 //声明符后缀
 void Parser::Declarator_Postfix()
 {
-	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "(") //函数
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "(")	//函数
 	{
-		ParameterList(); //参数列表
+		Lexer::Lexer_Instance().Lexer_Read(); //读取”（“
+		ParameterList(); //参数列表解析
 	}
 	else if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "[") //数组
 	{
 		Lexer::Lexer_Instance().Lexer_Read(); //读取"["
 		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_IsNumber())
 		{
-
+			Lexer::Lexer_Instance().Lexer_Read(); //读取 数组大小
 		}
+		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "]")
+			Lexer::Lexer_Instance().Lexer_Read(); //读取"]"
+		else
+		{
+			Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "IDENT", "declaration", "need input  a ']'");
+			error.ThrowError();
+		}
+
+	}
+}
+//参数列表解析
+void Parser::ParameterList()
+{
+	while (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() != ")")
+	{
+		if (!Type_Sign())
+		{
+			Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "IDENT", "declaration", "no such type");
+			error.ThrowError();
+		}
+		Declarator(); //确定 标识符
+		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText == ",")
+		{
+			Lexer::Lexer_Instance().Lexer_Read();//读取”=“
+			continue;
+		}
+	}
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText == ")")
+		Lexer::Lexer_Instance().Lexer_Read();
+}
+//函数体
+void Parser::Funbody()
+{
+	Compound_Statement(); //复合语句
+}
+//复合语句
+void Parser::Compound_Statement()
+{
+	while (!Type_Sign()) 
+	{
+		Parser::Parser_Instance().External_Dec(Local);//内部声明 或 定义
+	}
+	while (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() != "}")
+	{
+		Statement();//语句
+	}
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText == "}")
+		Lexer::Lexer_Instance().Lexer_Read();
+}
+//语句
+void Parser::Statement()
+{
+	Token token = Lexer::Lexer_Instance().Lexer_Peek(0);
+	switch (API::Instance().Token2Statement(token))
+	{
+	case Statement_Start: //如果 为 “｛” 即复合语句
+			Compound_Statement();
+	case If_Statement:
+			Statement_If();
+	case For_Statement:
+			Statement_For();
+	case While_Statement:
+			Statement_While();
+	case Return_Statement:
+			Statement_Return();
+	case Break_Statement:
+			Statement_Break();
+	case Continue_Statement:
+			Statement_Continue();
+	default:
+		break;
 	}
 }
 //解析类型符号
@@ -89,7 +161,7 @@ bool Parser::Type_Sign()
 	case Int:
 		Type_Find = true;
 	case Float:
-		Type_Find = true;
+		Type_Find = true;  
 	case Void:
 		Type_Find = true;
 	case String:
