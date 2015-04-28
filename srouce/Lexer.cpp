@@ -60,6 +60,7 @@ Token Lexer::Lexer_Read()
 	{
 		Token read = Queue.front();
 		Queue.pop();
+		Queue.push(read);
 		return read;
 	}
 	else

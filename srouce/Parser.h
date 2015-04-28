@@ -18,7 +18,8 @@ public:
 	void Declarator();					//声明符
 	void Funbody();						//函数体
 	void Init();						//初值符
-
+	void Declarator_Postfix();			//声明符号后缀
+	void ParameterList();				//参数列表
 	//
 	bool Is_Keyword(Token token);		//是否为关键字
 	void Parser_Var();					//变量声明或定义区段

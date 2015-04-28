@@ -15,7 +15,7 @@ void Parser::Parsering(queue<Token> Queue)
 //解析外部声明
 void Parser::External_Dec(External state)
 {
-	if (!Type_Sign())
+	if (!Type_Sign()) //类型判断
 	{
 		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Type", "declaration", "no such type");
 		error.ThrowError();
@@ -48,9 +48,35 @@ void Parser::External_Dec(External state)
 		}
 	}
 }
+//声明符
 void Parser::Declarator()
 {
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_IsId)
+	{
+		Lexer::Lexer_Instance().Lexer_Read(); //读取这个标识符
+	}
+	else
+	{
+		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "IDENT", "declaration", "must be a id");
+		error.ThrowError();
+	}
+	Declarator_Postfix();
+}
+//声明符后缀
+void Parser::Declarator_Postfix()
+{
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "(") //函数
+	{
+		ParameterList(); //参数列表
+	}
+	else if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "[") //数组
+	{
+		Lexer::Lexer_Instance().Lexer_Read(); //读取"["
+		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_IsNumber())
+		{
 
+		}
+	}
 }
 //解析类型符号
 bool Parser::Type_Sign()
