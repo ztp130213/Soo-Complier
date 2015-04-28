@@ -1,9 +1,10 @@
 #include "Parser.h"
-#include "AST.h"
+
 #include "Error.h"
 #include "Global.h"
 #include "API.h"
 using namespace std;
+//语法分析
 void Parser::Parsering(queue<Token> Queue)
 {
 	Token token;
@@ -149,6 +150,33 @@ void Parser::Statement()
 	default:
 		break;
 	}
+}
+//If语句
+void Parser::Statement_If()
+{
+	Lexer::Lexer_Instance().Lexer_Read();//读取 关键字 “IF”
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "(") //IF语句中的判断表达式
+		Lexer::Lexer_Instance().Lexer_Read();
+	else
+	{
+		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "IF", "If_Statement", "need input a '('");
+		error.ThrowError();
+	}
+	Expression();  //判断表达式
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ")")
+		Lexer::Lexer_Instance().Lexer_Read();
+	else
+	{
+		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "IF", "If_Statement", "need input a ')'");
+		error.ThrowError();
+	}
+	Statement();
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "else")
+	{
+		Lexer::Lexer_Instance().Lexer_Read();//读取 else
+		Statement();
+	}
+
 }
 //解析类型符号
 bool Parser::Type_Sign()

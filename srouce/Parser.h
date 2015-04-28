@@ -28,6 +28,7 @@ public:
 	void Statement_Return();			//ReturnÓï¾ä
 	void Statement_Continue();			//ContinueÓï¾ä
 	void Statement_Break();				//BreakÓï¾ä
+	void Expression();					//±í´ïÊ½
 };
 inline Parser & Parser::Parser_Instance()
 {
