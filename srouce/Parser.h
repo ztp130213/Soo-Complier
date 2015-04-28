@@ -15,6 +15,9 @@ public:
 	void Parsering(queue<Token> Queue);	//进行语法分析
 	void External_Dec(External state);  //解析外部声明
 	bool Type_Sign();					//判断是否为类型符号
+	void Declarator();					//声明符
+	void Funbody();						//函数体
+	void Init();						//初值符
 
 	//
 	bool Is_Keyword(Token token);		//是否为关键字
