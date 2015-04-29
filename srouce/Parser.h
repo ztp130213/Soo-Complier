@@ -28,7 +28,7 @@ public:
 	void Statement_Return();			//Return语句
 	void Statement_Continue();			//Continue语句
 	void Statement_Break();				//Break语句
-	void Expression();					//表达式
+	void Statement_Expression();		//表达式
 };
 inline Parser & Parser::Parser_Instance()
 {

@@ -148,6 +148,7 @@ void Parser::Statement()
 	case Continue_Statement:
 			Statement_Continue();
 	default:
+		Statement_Expression();//表达式
 		break;
 	}
 }
@@ -162,7 +163,7 @@ void Parser::Statement_If()
 		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "IF", "If_Statement", "need input a '('");
 		error.ThrowError();
 	}
-	Expression();  //判断表达式
+	Statement_Expression();  //判断表达式
 	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ")")
 		Lexer::Lexer_Instance().Lexer_Read();
 	else
@@ -170,13 +171,38 @@ void Parser::Statement_If()
 		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "IF", "If_Statement", "need input a ')'");
 		error.ThrowError();
 	}
-	Statement();
+	Statement();//语句块
 	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "else")
 	{
 		Lexer::Lexer_Instance().Lexer_Read();//读取 else
 		Statement();
 	}
-
+}
+//while语句
+void Parser::Statement_While()
+{
+	Lexer::Lexer_Instance().Lexer_Read();//读取 关键字 “While”
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "(")
+		Lexer::Lexer_Instance().Lexer_Read();
+	else
+	{
+		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "While", "While_Statement", "need input a '('");
+		error.ThrowError();
+	}
+	Statement_Expression();  //判断表达式
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ")")
+		Lexer::Lexer_Instance().Lexer_Read();
+	else
+	{
+		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "While", "While_Statement", "need input a ')'");
+		error.ThrowError();
+	}
+	Statement();//语句块
+}
+//For语句
+void Parser::Statement_For()
+{
+	Lexer::Lexer_Instance().Lexer_Read(); //读取关键字 For
 }
 //解析类型符号
 bool Parser::Type_Sign()
