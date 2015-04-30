@@ -1,5 +1,4 @@
 #include "Parser.h"
-
 #include "Error.h"
 #include "Global.h"
 #include "API.h"
