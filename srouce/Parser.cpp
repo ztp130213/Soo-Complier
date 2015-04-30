@@ -23,6 +23,27 @@ void Parser::Token_Judge(string token, string module, string function, string er
 		error.ThrowError();
 	}
 }
+//解析类型符号
+bool Parser::Type_Sign()
+{
+	bool Type_Find = false;
+	switch (API::Instance().Token2Type(Lexer::Lexer_Instance().Lexer_Read()))
+	{
+	case Char:
+		Type_Find = true;
+	case Int:
+		Type_Find = true;
+	case Float:
+		Type_Find = true;
+	case Void:
+		Type_Find = true;
+	case String:
+		Type_Find = true;
+	default:
+		break;
+	}
+	return Type_Find;
+}
 //解析 声明
 void Parser::External_Dec(External state)
 {
@@ -205,120 +226,10 @@ void Parser::Statement_Return()
 	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ";")
 		Lexer::Lexer_Instance().Lexer_Read(); //读取 “;"
 	else
-		Statement_Expression();
-	Token_Judge(")", "For", "For_Statement", "need input a ')'");
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	else
-	{
-		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "While", "While_Statement", "need input a ')'");
-		error.ThrowError();
+	{ 
+		Statement_Expression();  //形如return ***;
+		Token_Judge(";", "Return", "Return_Statement", "need input a ';'");
 	}
-	Statement();//语句块
 }
-//For语句
-void Parser::Statement_For()
-{
-	Lexer::Lexer_Instance().Lexer_Read(); //读取关键字 For
-	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "(")
-		Lexer::Lexer_Instance().Lexer_Read();
-	else
-	{
-		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "While", "While_Statement", "need input a '('");
-		error.ThrowError();
-	}
-
-}
-//解析类型符号
-bool Parser::Type_Sign()
-{
-	bool Type_Find = false;
-	switch (API::Instance().Token2Type(Lexer::Lexer_Instance().Lexer_Read()))
-	{
-	case Char:
-		Type_Find = true;
-	case Int:
-		Type_Find = true;
-	case Float:
-		Type_Find = true;  
-	case Void:
-		Type_Find = true;
-	case String:
-		Type_Find = true;
-	default:
-		break;
-	}
-	return Type_Find;
-}
+//Break 语句
+void Parser::
