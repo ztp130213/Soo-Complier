@@ -2,6 +2,7 @@
 #ifndef _PARSER_H
 #define _PARSER_H
 #include <queue>
+#include <string>
 #include "Lexer.h"
 #include "Global.h"
 using namespace std;
@@ -29,6 +30,7 @@ public:
 	void Statement_Continue();			//Continue”Ôæ‰
 	void Statement_Break();				//Break”Ôæ‰
 	void Statement_Expression();		//±Ì¥Ô Ω
+	void Token_Judge(string token,string module,string function,string error);		//Token ≈–∂œ
 };
 inline Parser & Parser::Parser_Instance()
 {
