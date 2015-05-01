@@ -59,7 +59,7 @@ void Parser::External_Dec(External state)
 	}
 	while (1) //逐个分析声明或函数定义
 	{
-		Declarator();
+		Declarator(); //声明标识符
 		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "{") // 函数定义
 		{
 			if (state == Local)
@@ -75,10 +75,15 @@ void Parser::External_Dec(External state)
 			if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "=")
 			{
 				Lexer::Lexer_Instance().Lexer_Read();//读取“=”
-				Init();
+				Init(); //变量初值
 			}
 		}
 	}
+}
+//变量初值
+void Parser::Init()
+{
+	Assign_Expression();
 }
 //声明 标识符
 void Parser::Declarator()
@@ -94,7 +99,7 @@ void Parser::Declarator()
 	}
 	Declarator_Postfix(); //声明符后缀
 }
-//声明符后缀
+//声明符后缀 ，即判断函数 、数组声明
 void Parser::Declarator_Postfix()
 {
 	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "(")	//函数
@@ -119,7 +124,7 @@ void Parser::Declarator_Postfix()
 
 	}
 }
-//参数列表解析
+//函数参数列表解析
 void Parser::ParameterList()
 {
 	while (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() != ")")
@@ -253,6 +258,9 @@ void Parser::Statement_Expression()
 			break;
 	}
 }
+/*
+	根据运算符优先级进行编写对应的函数嵌套
+*/
 //赋值表达式
 void Parser::Assign_Expression()
 {
@@ -322,10 +330,10 @@ void Parser::Unary_Expression()
 		break;
 	}
 }
-//后缀表达式
+//表达式的后缀
 void Parser::Postfix_Expression()
 {
-	Primary_Expression();
+	Variable_Expression();
 	while (1)
 	{
 		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "(") //函数
@@ -356,7 +364,7 @@ void Parser::Variable_Expression()
 	}
 	}
 }
-//实参数表达式
+//函数实参数表达式
 void Parser::ArgumentList()
 {
 	Lexer::Lexer_Instance().Lexer_Read();//读取 "("
