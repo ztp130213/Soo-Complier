@@ -12,8 +12,9 @@ public:
 	string Error_Dec;//错误的描述
 	int Line;		 //发生错误的行数
 	Error();
-	Error(int line,string module, string function, string error_dec);
-	string ThrowError();
+	Error(int line,string module, string function, string error_dec);//一般为语法分析时分析出的错误
+	Error(string module, string function, string error_dec);//常规错误
+	string ThrowError(); //错误输出
 };
 inline Error & Error_Instance()
 {
