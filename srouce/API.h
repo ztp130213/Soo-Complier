@@ -16,7 +16,8 @@ public:
 	float String2Float(string str);
 	char * String2CharPlus(string str);
 	Data_Type Token2Type(Token token);  //token 转 数据类型
-	Ex_Statement Token2Statement(Token token);//token 转语句类型
+	Ex_Statement Token2Statement(Token token);//token 转 语句类型
+	Operator Token2Operator(Token token); //token 转 运算符
 	/*
 		主程类
 	*/

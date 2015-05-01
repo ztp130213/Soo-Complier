@@ -232,4 +232,143 @@ void Parser::Statement_Return()
 	}
 }
 //Break 语句
-void Parser::
+void Parser::Statement_Break()
+{
+	Lexer::Lexer_Instance().Lexer_Read();//读取 “Break"
+	Token_Judge(";", "Break", "Break_Statement", "need input a ';'");
+}
+//continue 语句
+void Parser::Statement_Continue()
+{
+	Lexer::Lexer_Instance().Lexer_Read();//读取 continue 
+	Token_Judge(";", "Continue", "Continue_Statement", "need input a ';'");
+}
+//Expreesion 表达式
+void Parser::Statement_Expression()
+{
+	while (1)
+	{
+		Assign_Expression();
+		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ",")
+			break;
+	}
+}
+//赋值表达式
+void Parser::Assign_Expression()
+{
+	Equal_Expression();
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "=")
+	{
+		Lexer::Lexer_Instance().Lexer_Read(); //读取 ”=“
+		Assign_Expression();
+	}
+}
+//相等表达式
+void Parser::Equal_Expression()
+{
+	Relation_Expression();
+	while (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "==" || Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "!=")
+	{
+		Lexer::Lexer_Instance().Lexer_Read();
+		Relation_Expression();
+	}
+}
+//关系表达式
+void Parser::Relation_Expression()
+{
+	Add_Expression();
+	while (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "<" || Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ">"
+		|| Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "<=" || Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ">=")
+	{
+		Lexer::Lexer_Instance().Lexer_Read();
+		Add_Expression();
+	}
+}
+//加减类表达式
+void Parser::Add_Expression()
+{
+	Multilpi_Expression();
+	while (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "+" || Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "-")
+	{
+		Lexer::Lexer_Instance().Lexer_Read();
+		Multilpi_Expression();
+	}
+}
+//乘除类表达式
+void Parser::Multilpi_Expression()
+{
+	Unary_Expression();
+	while (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "*" || Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "/")
+	{
+		Lexer::Lexer_Instance().Lexer_Read();
+		Unary_Expression();
+	}
+}
+//一元运算表达式
+void Parser::Unary_Expression()
+{
+	switch (API::Instance().Token2Operator(Lexer::Lexer_Instance().Lexer_Peek(0)))
+	{
+	case Plus:
+		Lexer::Lexer_Instance().Lexer_Read();
+		Unary_Expression();
+		break;
+	case Minus:
+		Lexer::Lexer_Instance().Lexer_Read();
+		Unary_Expression();
+		break;
+	default:
+		Postfix_Expression();
+		break;
+	}
+}
+//后缀表达式
+void Parser::Postfix_Expression()
+{
+	Primary_Expression();
+	while (1)
+	{
+		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "(") //函数
+			ArgumentList();
+		else if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "[")
+		{
+			Lexer::Lexer_Instance().Lexer_Read();
+			Statement_Expression();
+			Token_Judge("]", "Postfix", "Postfix_Expression", "need input a ']'");
+		}
+	}
+}
+//变量个体
+void Parser::Variable_Expression()
+{
+	switch (API::Instance().Token2Type(Lexer::Lexer_Instance().Lexer_Peek(0)))
+	{
+	case Int:
+	case Char:
+	case Float:
+	case String:
+		break;
+	default:
+	{
+			   Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Variable", "Variable_Expression", "no such type variable");
+			   error.ThrowError();
+			   break;
+	}
+	}
+}
+//实参数表达式
+void Parser::ArgumentList()
+{
+	Lexer::Lexer_Instance().Lexer_Read();//读取 "("
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() != ")")
+	{
+		for (;;)
+		{
+			Assign_Expression();
+			if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ")")
+				break;
+			Token_Judge(",", "ArgumentList", "Parameter list ", "need input a ','");
+		}
+	}
+	Token_Judge(")", "ArgumentList", "Parameter list ", "need input a ')'");
+}

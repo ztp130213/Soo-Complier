@@ -18,8 +18,6 @@ enum External
 	Local,		//表示函数内部解析状态
 };
 
-/*
-*/
 //语句类型
 enum Ex_Statement
 {
@@ -31,5 +29,11 @@ enum Ex_Statement
 	Break_Statement,
 	Return_Statement
 };
+//运算符号
+enum Operator
+{
+	Plus,//+
+	Minus,//-
 
+};
 #endif

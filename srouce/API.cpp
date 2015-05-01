@@ -64,6 +64,14 @@ Ex_Statement API::Token2Statement(Token token)
 	if (token.Token_GetText() == "return")
 		return Return_Statement;
 }
+//Token ×ª Operator
+Operator API::Token2Operator(Token token)
+{
+	if (token.Token_GetText() == "+")
+		return Plus;
+	if (token.Token_GetText() == "-")
+		return Minus;
+}
 //»¶Ó­½çÃæ
 void API::API_Welcome()
 {
