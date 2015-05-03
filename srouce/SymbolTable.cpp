@@ -1,34 +1,23 @@
 #include "SymbolTable.h"
 #include "Error.h"
-//栈的初始化
-Stack::Stack()
+using namespace std;
+//将符号压入符号栈
+Symbol * Symbol_DirectPush(stack< Token> * stack, int number, Data_Type * type, int correlation_value)
 {
-	this->Base = new void *;
-	if (!this->Base)
-	{
-		Error error("SymbolTable", "Stack", "Stack base Pointer Memory allocation failure");
-		error.ThrowError();
-	}
-	this->Top = this->Base;
-	this->StackSize = 0;
-}
-//栈的初始化
-Stack::Stack(int size)
-{
-	this->Base = new void *;
-	if (!this->Base)
-	{
-		Error error("SymbolTable", "Stack", "Stack base Pointer Memory allocation failure");
-		error.ThrowError();
-	}
-	this->Top = this->Base;
-	this->StackSize = size;
-}
-//压栈,并返回栈顶元素
-void * Stack::Stack_Push(void * value)
-{
-	if (this->StackSize + 1 <=this->StackSize)
-	{
 
-	}
+}
+//将符号压入符号栈，动态判断全局或局部
+Symbol *Symbol_Push(int number, Data_Type* type, int memory_type, int correlation_value)
+{
+
+}
+//将函数符号放入全局符号表中
+Symbol * Symbol_System::Symbol_FunctionPush(int number, Data_Type * type)
+{
+
+}
+//把变量放入符号表中
+Symbol *Symbol_VariablePush(Data_Type * type, int Register, int number, int address)
+{
+
 }
