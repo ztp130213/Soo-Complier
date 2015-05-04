@@ -2,6 +2,7 @@
 #include "Error.h"
 #include "Global.h"
 #include "API.h"
+#include "SymbolTable.h"
 using namespace std;
 //语法分析
 void Parser::Parsering(queue<Token> Queue)
@@ -24,34 +25,53 @@ void Parser::Token_Judge(string token, string module, string function, string er
 	}
 }
 //解析类型符号
-bool Parser::Type_Sign()
+bool Parser::Type_Sign(TypeCode * symboltype)
 {
+	int type;
 	bool Type_Find = false;
 	switch (API::Instance().Token2Type(Lexer::Lexer_Instance().Lexer_Read()))
 	{
 	case Char:
+		type = T_Char;
 		Type_Find = true;
 	case Int:
+		type = T_Int;
 		Type_Find = true;
 	case Float:
+		type = T_Float;
 		Type_Find = true;
 	case Void:
+		type = T_Void;
 		Type_Find = true;
 	case String:
+		type = T_String;
+		Type_Find = true;
+	case Struct:
+		Struct_Specifier();
+		type = T_Struct;
 		Type_Find = true;
 	default:
 		break;
 	}
 	return Type_Find;
 }
-//解析 声明
+//结构体类型解析
+void Parser::Struct_Specifier()
+{
+
+}
+//
+//解析 声明 ，功能：声明与函数定义
 void Parser::External_Dec(External state)
 {
-	if (!Type_Sign()) //类型判断
+	TypeCode symboltype;
+	if (!Type_Sign(&symboltype)) //类型判断
 	{
 		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Type", "declaration", "no such type");
 		error.ThrowError();
 	}
+	else
+		Lexer::Lexer_Instance().Lexer_Read();//读取 类型标识符号
 	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ";")
 	{
 		Lexer::Lexer_Instance().Lexer_Read();
