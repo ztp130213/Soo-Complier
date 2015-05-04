@@ -23,6 +23,7 @@ public:
 	void Declarator_Postfix();			//声明符号后缀
 	void Struct_Specifier();			//结构体类型解析
 	void Struct_DeclarationList();		//结构声明符表
+	bool Struct_Search(Token token);	//结构体定义查找
 	void ParameterList();				//形式参数列表
 	void ArgumentList();				//实参表达式列表
 	void Compound_Statement();          //复合语句

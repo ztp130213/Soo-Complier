@@ -29,7 +29,7 @@ bool Parser::Type_Sign(TypeCode * symboltype)
 {
 	int type;
 	bool Type_Find = false;
-	switch (API::Instance().Token2Type(Lexer::Lexer_Instance().Lexer_Read()))
+	switch (API::Instance().Token2Type(Lexer::Lexer_Instance().Lexer_Read()))  //读取类型
 	{
 	case Char:
 		type = T_Char;
@@ -47,7 +47,7 @@ bool Parser::Type_Sign(TypeCode * symboltype)
 		type = T_String;
 		Type_Find = true;
 	case Struct:
-		Struct_Specifier();
+		Struct_Specifier();  //结构体类型解析
 		type = T_Struct;
 		Type_Find = true;
 	default:
@@ -58,9 +58,17 @@ bool Parser::Type_Sign(TypeCode * symboltype)
 //结构体类型解析
 void Parser::Struct_Specifier()
 {
+	Token token = Lexer::Lexer_Instance().Lexer_Read();// 读取结构体名字
+	if (Struct_Search(token))
+	{
+
+	}
+}
+//结构体定义查找
+bool Parser::Struct_Search(Token token)
+{
 
 }
-//
 //解析 声明 ，功能：声明与函数定义
 void Parser::External_Dec(External state)
 {
