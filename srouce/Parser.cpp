@@ -13,7 +13,7 @@ void Parser::Parsering(queue<Token> Queue)
 		External_Dec(Global);
 	}
 }
-//Token 判断
+//Token 合法判断
 void Parser::Token_Judge(string token, string module, string function, string error)
 {
 	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == token)
@@ -23,6 +23,43 @@ void Parser::Token_Judge(string token, string module, string function, string er
 		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber,module, function, error);
 		error.ThrowError();
 	}
+}
+//声明符是否为关键字
+bool Parser::Is_Keyword(Token token)
+{
+	string StrToken = token.Token_GetText();
+	if (StrToken != "int"&&StrToken != "char"&&StrToken != "float"&&StrToken != "string"&&StrToken != "void"&&StrToken != "return"&&
+		StrToken != "break"&&StrToken != "continue"&&StrToken != "struct")
+		return true;
+	else
+		return false;
+}
+//声明符是否合法
+bool Parser::D_Legal(Token token)
+{
+	string StrToken = token.Token_GetText();
+	char First = StrToken[0];
+	if (First >= '0'&&First <= '9')
+		return true;
+	else
+		return false;
+}
+//声明符合法判断
+bool Parser::Declaration_Legal(Token token)
+{
+	bool is_Keyword, d_Legal;
+	if (Is_Keyword(token))
+		is_Keyword = true; //是关键字
+	else
+		is_Keyword = false; //不是关键字
+	if (D_Legal(token))
+		d_Legal = true; //是合法的
+	else
+		d_Legal = false;//不是合法的
+	if (!is_Keyword&&d_Legal)
+		return true;
+	else
+		return false;
 }
 //解析类型符号
 bool Parser::Type_Sign(TypeCode * symboltype)
@@ -47,7 +84,7 @@ bool Parser::Type_Sign(TypeCode * symboltype)
 		type = T_String;
 		Type_Find = true;
 	case Struct:
-		Struct_Specifier();  //结构体类型解析
+		Struct_Specifier(symboltype);  //结构体类型解析
 		type = T_Struct;
 		Type_Find = true;
 	default:
@@ -56,18 +93,37 @@ bool Parser::Type_Sign(TypeCode * symboltype)
 	return Type_Find;
 }
 //结构体类型解析
-void Parser::Struct_Specifier()
+void Parser::Struct_Specifier(TypeCode * symboltype)
 {
 	Token token = Lexer::Lexer_Instance().Lexer_Read();// 读取结构体名字
-	if (Struct_Search(token))
+	if (!Declaration_Legal(token)) //结构体名字合法性判断
 	{
-
+		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Struct", "Struct  declaration", "Struct name is not legal");
+		error.ThrowError();
 	}
+	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "{")
+	{
+		Struct_DeclarationList(); //结构体声明符表
+	}
+}
+//结构体声明符表
+void Parser::Struct_DeclarationList()
+{
+	while (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() != "}")
+	{
+		Struct_Declaration();
+	}
+	Lexer::Lexer_Instance().Lexer_Read();//读取“｝”
+}
+//结构体声明
+void Parser::Struct_Declaration()
+{
+
 }
 //结构体定义查找
 bool Parser::Struct_Search(Token token)
 {
-
+	 
 }
 //解析 声明 ，功能：声明与函数定义
 void Parser::External_Dec(External state)

@@ -19,10 +19,14 @@ public:
 	bool Type_Sign(TypeCode *symboltype);//判断是否为类型符号
 	void Declarator();					//声明符
 	void Funbody();						//函数体
+	bool Is_Keyword(Token token);		//声明符是否为关键字
+	bool D_Legal(Token token);			//字符序列是否合法
+	bool Declaration_Legal(Token token);//声明符合法判断
 	void Init();						//初值符
 	void Declarator_Postfix();			//声明符号后缀
-	void Struct_Specifier();			//结构体类型解析
+	void Struct_Specifier(TypeCode *symboltype);//结构体类型解析
 	void Struct_DeclarationList();		//结构声明符表
+	void Struct_Declaration();			//结构体声明
 	bool Struct_Search(Token token);	//结构体定义查找
 	void ParameterList();				//形式参数列表
 	void ArgumentList();				//实参表达式列表
