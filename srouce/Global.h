@@ -46,7 +46,7 @@ enum Memory_Type
 	M_Valmask=0x00ff,	//存储类型掩码
 	M_Lval=0x0100,		//左值
 	M_Symbol=0x0200,	//符号
-	M_Strut=0x20000000, //结构体符号
+	M_Struct=0x20000000, //结构体符号
 	M_Member=0x40000000,//结构成员变量
 	M_Params=0x80000000,//函数参数
 };
