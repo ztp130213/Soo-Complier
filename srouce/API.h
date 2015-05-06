@@ -18,7 +18,7 @@ public:
 	Data_Type Token2Type(Token token);  //token 转 数据类型
 	Ex_Statement Token2Statement(Token token);//token 转 语句类型
 	Operator Token2Operator(Token token); //token 转 运算符
-	int Elf_Hash(char * key);			//哈希函数，计算哈希地址
+	int Elf_Hash(char * key);			//符号表使用，哈希函数，计算哈希地址
 	/*
 		主程类
 	*/

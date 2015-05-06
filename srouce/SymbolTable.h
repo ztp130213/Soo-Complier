@@ -11,41 +11,36 @@ using namespace std;
 	符号表系统
 	在编译程序中符号表用来存放程序中出现的有关标识符的属性信息
 */
-/*
-符号存储结构
-*/
+//数组
+//标识符结构
 struct Symbol
 {
-	int Number;//符号的单词编码
-	int Register;//符号关联的寄存器
-	int Correlation_value;//符号关联值
-	Symbol_Type Type;//符号数据类型
-	Symbol * Next;//关联的其它符号
-	Symbol * Prev_token;//指向前一定义的同名符号
+	char *Name;//标识符名字
+	TypeCode Type;//标识符种类
+	Data_Type DType;//数据类型
+	int Level;//符号所在层次 即作用域
+	int Address;//符号地址，即在其所处的域的“运行空间”中的位置
+	Symbol * Next_token;//指向下一定义的同名符号
 };
-
-/*
-	数据类型结构
-*/
-struct Symbol_Type
-{
-	int TypeCode;//数据类型
-	struct Symbol * Ref; //引用符号
-};
-
 //符号表系统
 class Symbol_System
 {
 public:
-	stack<Symbol> Global_Stack;//全局符号栈
-	stack<Symbol> Local_Stack;//局部符号栈
-	Symbol* Symbol_DirectPush(stack<Symbol> *stack,int number,Symbol_Type  type,int correlation_value);//将符号压入符号栈
-	Symbol *Symbol_Push(int number, Symbol_Type  type, int memory_type, int correlation_value);//将符号压入符号栈，动态判断全局或局部
+	static Symbol_System & Symbol_SystemInstance();//实例化
+	stack<Symbol> Symbol_Stack;	//全局符号栈
+	stack<int> Index_Stack;		//索引符号栈
+	void Symbol_Push(char *name, TypeCode type,Data_Type dtype,int level);//将符号压入符号栈
 	Symbol *Symbol_FunctionPush(int number, Symbol_Type  type); //将函数符号放入全局符号表中
 	Symbol *Symbol_VariablePush(Symbol_Type  type, int memory_type, int number, int address);//把变量放入符号表中
 	Symbol *Symbol_Search(int number);		//标识符查找 
 
 };
+//符号系统的实例化
+Symbol_System & Symbol_System::Symbol_SystemInstance()
+{
+	Symbol_System sybol;
+	return sybol;
+}
 /*
 	单词表系统
 */

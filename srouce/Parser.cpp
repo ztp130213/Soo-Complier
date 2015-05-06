@@ -98,6 +98,7 @@ bool Parser::Type_Sign(Symbol_Type* symboltype)
 //Struct结构体类型解析
 void Parser::Struct_Specifier(Symbol_Type* symboltype)
 {
+	Symbol *S;
 	Symbol_Type TypeRef;
 	Token token = Lexer::Lexer_Instance().Lexer_Read();// 读取结构体名字
 	if (!Declaration_Legal(token)) //结构体名字合法性判断
@@ -105,9 +106,10 @@ void Parser::Struct_Specifier(Symbol_Type* symboltype)
 		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Struct", "Struct  declaration", "Struct name is not legal");
 		error.ThrowError();
 	}
-	if (Struct_Search(token))
+	if (Struct_Search(token)==NULL) //如果没有找到这个名字的结构体
 	{
-
+		TypeRef.TypeCode = M_Struct;
+		S = Symbol_System::Symbol_SystemInstance().Symbol_Push()
 	}
 	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "{")
 	{
@@ -139,10 +141,11 @@ void Parser::Struct_Declaration()
 //Struct结构体是否已经存在，并进行查找 
 Symbol* Parser::Struct_Search(Token token)
 {
-	if (number >= TKArrayTable.size())
+	int TokenHash = API::Instance().Elf_Hash(API::Instance().String2CharPlus(token.Token_GetText()));
+	if (TKArrayTable.data[TokenHash]==NULL)
 		return NULL;
 	else
-		return TKArrayTable.data[number]->symbol_struct;
+		return TKArrayTable.data[TokenHash]->symbol_struct;
 }
 //解析 声明 ，功能：声明与函数定义
 void Parser::External_Dec(External state)
