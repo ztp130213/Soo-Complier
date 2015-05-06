@@ -11,15 +11,34 @@ using namespace std;
 	符号表系统
 	在编译程序中符号表用来存放程序中出现的有关标识符的属性信息
 */
-//数组
+//数组数据类型
+struct Symbol_Array
+{
+	int Length;//数组维度
+};
+//函数形式参数
+struct Symbol_FuncParam
+{
+	Data_Type type;//参数类型
+	string name; //参数名字
+};
+//函数数据类型
+struct Symbol_Function
+{
+	Data_Type Func_Type;//函数返回类型
+	int Func_Address;//函数入口地址
+	vector<Symbol_FuncParam> Func_ParamList;//函数的形式参数
+};
 //标识符结构
 struct Symbol
 {
-	char *Name;//标识符名字
+	string Name;//标识符名字
 	TypeCode Type;//标识符种类
 	Data_Type DType;//数据类型
-	int Level;//符号所在层次 即作用域
 	int Address;//符号地址，即在其所处的域的“运行空间”中的位置
+	Symbol_Array * Symbol_array;//标识符表示的种类为数组
+	Symbol_Function * Symbol_function;//标识符表示的种类为函数
+
 	Symbol * Next_token;//指向下一定义的同名符号
 };
 //符号表系统
