@@ -12,5 +12,19 @@ void Symbol_System::Symbol_CreateTree()
 //将符号加入树形结构符号表系统
 void Symbol_System::Symbol_Add(string symbolname, TypeCode type, Data_Type dtype)
 {
+	SymbolTable_Node *symbolnode;
+	symbolnode->SymbolData.Name = symbolname;
+	symbolnode->SymbolData.Type = type;
+	symbolnode->SymbolData.DType = dtype;
+	if (this->SymbolPointer->Child == NULL)
+		this->SymbolPointer->Child = symbolnode;
+	else
+	{
+		while (this->SymbolPointer->Child->SymbolData.Link!=NULL)
+		{
+			this->SymbolPointer = this->SymbolPointer->Child->SymbolData.Link;
+		}
+		this->SymbolPointer->SymbolData.Link = symbolnode;
+	}
 
 }

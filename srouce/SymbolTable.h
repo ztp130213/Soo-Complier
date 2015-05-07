@@ -54,6 +54,7 @@ class Symbol_System
 {
 public:
 	static Symbol_System & Symbol_SystemInstance();	//实例化
+	static SymbolTable_Node * SymbolPointer;//进行词法分析时符号表的实时指针
 	SymbolTable_Node * SymbolTreeRoot;					//符号表的树结构根节点
 	void Symbol_CreateTree();							//构建符号表系统树形结构
 	void Symbol_Add(string name, TypeCode type,Data_Type dtype);//将符号加入树形结构符号表系统
