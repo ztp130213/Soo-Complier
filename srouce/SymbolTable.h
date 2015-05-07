@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <map>
 #include "Lexer.h"
 #include "Global.h"
 using namespace std;
@@ -29,7 +30,8 @@ struct Symbol_Function
 	int Func_Address;//函数入口地址
 	vector<Symbol_FuncParam> Func_ParamList;//函数的形式参数
 };
-//标识符结构
+
+//标识符节点结构
 struct Symbol
 {
 	string Name;//标识符名字
@@ -38,20 +40,25 @@ struct Symbol
 	int Address;//符号地址，即在其所处的域的“运行空间”中的位置
 	Symbol_Array * Symbol_array;//标识符表示的种类为数组
 	Symbol_Function * Symbol_function;//标识符表示的种类为函数
-
-	Symbol * Next_token;//指向下一定义的同名符号
+	SymbolTable_Node * Link;//相同作用域的符号
 };
-//符号表系统
+//符号表树结构
+struct SymbolTable_Node
+{
+	Symbol SymbolData;//节点数据
+	SymbolTable_Node * Root;	//父节点
+	SymbolTable_Node * Child;	//子节点
+};
+//符号表系统类
 class Symbol_System
 {
 public:
-	static Symbol_System & Symbol_SystemInstance();//实例化
-	stack<Symbol> Symbol_Stack;	//全局符号栈
-	stack<int> Index_Stack;		//索引符号栈
-	void Symbol_Push(char *name, TypeCode type,Data_Type dtype,int level);//将符号压入符号栈
-	Symbol *Symbol_FunctionPush(int number, Symbol_Type  type); //将函数符号放入全局符号表中
-	Symbol *Symbol_VariablePush(Symbol_Type  type, int memory_type, int number, int address);//把变量放入符号表中
-	Symbol *Symbol_Search(int number);		//标识符查找 
+	static Symbol_System & Symbol_SystemInstance();	//实例化
+	SymbolTable_Node * SymbolTreeRoot;					//符号表的树结构根节点
+	void Symbol_CreateTree();							//构建符号表系统树形结构
+	void Symbol_Add(string name, TypeCode type,Data_Type dtype);//将符号加入树形结构符号表系统
+	void Symbol_Delete();								//将符号从树形结构符号表系统删除
+	Symbol *Symbol_Search(int number);		//标识符查找，并返回查找到的符号节点，如果不存在返回NULL
 
 };
 //符号系统的实例化
@@ -60,20 +67,5 @@ Symbol_System & Symbol_System::Symbol_SystemInstance()
 	Symbol_System sybol;
 	return sybol;
 }
-/*
-	单词表系统
-*/
-#define Maxkey 1024 //哈希表容量
 
-//单词存储结构定义
-struct TKWord
-{
-	int TKCode;//单词编码
-	struct TKWord * Next;//指向哈希冲突的同义词
-	char *StrTK;//单词字符串
-	struct Symbol * symbol_struct;//指向单词所表示的结构定义
-	struct Symbol * symbol_ID;//指向单词所表示的标识符
-};
-TKWord * TK_HasTable[Maxkey]; //单词哈希表
-vector<TKWord> TKArrayTable;//单词表
 #endif 
