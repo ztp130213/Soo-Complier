@@ -17,14 +17,19 @@ void Symbol_System::Symbol_Add(string symbolname, TypeCode type, Data_Type dtype
 	symbolnode->SymbolData.Type = type;
 	symbolnode->SymbolData.DType = dtype;
 	if (this->SymbolPointer->Child == NULL)
+	{
 		this->SymbolPointer->Child = symbolnode;
+		symbolnode->Root = this->SymbolPointer;
+	}
 	else
 	{
-		while (this->SymbolPointer->Child->SymbolData.Link!=NULL)
+		SymbolTable_Node Pointer = *this->SymbolPointer;
+		while (this->SymbolPointer->Child->SymbolData.Link != NULL)
 		{
 			this->SymbolPointer = this->SymbolPointer->Child->SymbolData.Link;
 		}
+		symbolnode->Root = &Pointer;
 		this->SymbolPointer->SymbolData.Link = symbolnode;
+		this->SymbolPointer = &Pointer; //还原实时指针
 	}
-
 }
