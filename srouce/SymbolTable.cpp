@@ -33,3 +33,8 @@ void Symbol_System::Symbol_Add(string symbolname, TypeCode type, Data_Type dtype
 		this->SymbolPointer = &Pointer; //还原实时指针
 	}
 }
+//将符号从树形结构符号表系统删除
+void Symbol_System::Symbol_Delete(string symbolname, TypeCode type, Data_Type dtype)
+{
+
+}
