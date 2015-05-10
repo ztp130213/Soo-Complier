@@ -61,6 +61,47 @@ bool Parser::Declaration_Legal(Token token)
 	else
 		return false;
 }
+
+
+//解析声明 ，功能：声明与函数定义
+void Parser::External_Dec(External state)
+{
+	Symbol_System::Symbol_SystemInstance().Symbol_CreateTree();//构建符号表系统树形结构,即创建根结点
+	Symbol_System::Symbol_SystemInstance().SymbolPointer = Symbol_System::Symbol_SystemInstance().SymbolTreeRoot;//将根结点赋给实时结点
+	Symbol symboldata;
+	if (!Type_Sign(symboldata)) //类型判断
+	{
+		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Type", "declaration", "no such type");
+		error.ThrowError();
+	}
+	if (symboldata.Type==T_Struct&& Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ";")
+	{
+		Lexer::Lexer_Instance().Lexer_Read();
+		return;
+	}
+	while (1) //逐个分析声明或函数定义
+	{
+		Declarator(symboldata); //声明标识符
+		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "{") // 函数定义
+		{
+			if (state == Local)
+			{
+				Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Dec", "declaration", "not support function nest");
+				error.ThrowError();
+			}
+			Funbody();//函数体
+			break;
+		}
+		else
+		{
+			if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "=")
+			{
+				Lexer::Lexer_Instance().Lexer_Read();//读取“=”
+				Init(); //变量初值
+			}
+		}
+	}
+}
 //解析类型符号
 bool Parser::Type_Sign(Symbol & symboldata)
 {
@@ -100,11 +141,11 @@ void Parser::Struct_Specifier(Symbol & symboldata)
 		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Struct", "Struct  declaration", "Struct name is not legal");
 		error.ThrowError();
 	}
-	symboldata.Name=token.Token_GetText();
-	if (Struct_Search(token)==NULL) //如果没有找到这个名字的结构体
+	symboldata.Name = token.Token_GetText(); //获取结构体名字
+	if (Struct_Search(token) == NULL) //如果没有找到这个名字的结构体
 	{
 		symboldata.Type = T_Struct;
-		
+
 	}
 	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "{")
 	{
@@ -123,63 +164,21 @@ void Parser::Struct_DeclarationList(Symbol &symboldata)
 //Struct结构体声明
 void Parser::Struct_Declaration(Symbol & symboldata)
 {
-	Symbol Structsymbol;
-	Type_Sign(Structsymbol); //数据类型判断
+	Symbol StructAttribtues;
+	Type_Sign(StructAttribtues); //数据类型判断
 	while (1)
 	{
-		Declarator();
+		Declarator(StructAttribtues);
 		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ";")
 			break;
 		Token_Judge(",", "Struct", "Struct_Declaration", "need input a ','");
 	}
-
+	symboldata.Symbol_struct->Struct_Number.push_back(StructAttribtues);
 }
 //Struct结构体是否已经存在，并进行查找 
 Symbol* Parser::Struct_Search(Token token)
 {
-	int TokenHash = API::Instance().Elf_Hash(API::Instance().String2CharPlus(token.Token_GetText()));
-	if (TKArrayTable.data[TokenHash]==NULL)
-		return NULL;
-	else
-		return TKArrayTable.data[TokenHash]->symbol_struct;
-}
-//解析声明 ，功能：声明与函数定义
-void Parser::External_Dec(External state)
-{
-	SymbolTable_Node symbol_node;
-	Symbol symboldata;
-	if (!Type_Sign(symboldata)) //类型判断
-	{
-		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Type", "declaration", "no such type");
-		error.ThrowError();
-	}
-	if (symboldata.Type==T_Struct&& Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ";")
-	{
-		Lexer::Lexer_Instance().Lexer_Read();
-		return;
-	}
-	while (1) //逐个分析声明或函数定义
-	{
-		Declarator(); //声明标识符
-		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "{") // 函数定义
-		{
-			if (state == Local)
-			{
-				Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Dec", "declaration", "not support function nest");
-				error.ThrowError();
-			}
-			Funbody();//函数体
-			break;
-		}
-		else
-		{
-			if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "=")
-			{
-				Lexer::Lexer_Instance().Lexer_Read();//读取“=”
-				Init(); //变量初值
-			}
-		}
-	}
+	
 }
 //变量初值
 void Parser::Init()
@@ -187,7 +186,7 @@ void Parser::Init()
 	Assign_Expression();
 }
 //声明 标识符
-void Parser::Declarator(string &name)
+void Parser::Declarator(Symbol & symboldata)
 {
 	Token token;
 	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_IsId)
@@ -204,16 +203,17 @@ void Parser::Declarator(string &name)
 		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Declarator", "  declaration", "Declarator name is not legal");
 		error.ThrowError();
 	}
-	name = token.Token_GetText();//符号表获取标识符
-	Declarator_Postfix(); //声明符后缀
+	symboldata.Name = token.Token_GetText();//符号表获取标识符
+	Declarator_Postfix(symboldata); //声明符后缀
 }
 //声明符后缀 ，即判断函数 、数组声明
-void Parser::Declarator_Postfix()
+void Parser::Declarator_Postfix(Symbol & symboldata)
 {
 	if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "(")	//函数
 	{
 		Lexer::Lexer_Instance().Lexer_Read(); //读取”（“
-		ParameterList(); //参数列表解析
+		Symbol_Function  symbol_function;
+		ParameterList(symbol_function); //函数参数列表解析
 	}
 	else if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "[") //数组
 	{
@@ -226,7 +226,7 @@ void Parser::Declarator_Postfix()
 	}
 }
 //函数参数列表解析
-void Parser::ParameterList()
+void Parser::ParameterList(Symbol_Function &symbol_funciton)
 {
 	while (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() != ")")
 	{

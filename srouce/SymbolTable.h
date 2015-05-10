@@ -45,7 +45,8 @@ struct Symbol
 	int Address;//符号地址，即在其所处的域的“运行空间”中的位置
 	Symbol_Array * Symbol_array;//标识符表示的种类为数组
 	Symbol_Function * Symbol_function;//标识符表示的种类为函数
-	SymbolTable_Node * Link;//相同作用域的符号
+	Symbol_Struct * Symbol_struct;//标识符表示的种类为结构体
+	SymbolTable_Node * Link;//相同作用域的标识符
 };
 //符号表树结构
 struct SymbolTable_Node

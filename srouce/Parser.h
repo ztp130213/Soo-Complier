@@ -17,18 +17,18 @@ public:
 	void Parsering(queue<Token> Queue);	//进行语法分析
 	void External_Dec(External state);  //解析外部声明
 	bool Type_Sign(Symbol & symboldata);//判断是否为类型符号
-	void Declarator(string &name);		//声明符
+	void Declarator(Symbol & symboldata);//声明符
 	void Funbody();						//函数体
 	bool Is_Keyword(Token token);		//声明符是否为关键字
 	bool D_Legal(Token token);			//字符序列是否合法
 	bool Declaration_Legal(Token token);//声明符合法判断
 	void Init();						//初值符
-	void Declarator_Postfix();			//声明符号后缀
+	void Declarator_Postfix(Symbol & symboldata);//声明符号后缀
 	void Struct_Specifier(Symbol &symboldata);//结构体类型解析
 	void Struct_DeclarationList(Symbol & symboldata);//结构声明符表
 	void Struct_Declaration(Symbol & symboldata);	 //结构体声明
 	Symbol* Struct_Search(Token token);	//结构体定义查找
-	void ParameterList();				//形式参数列表
+	void ParameterList(Symbol_Function & symbol_funciton);//形式参数列表
 	void ArgumentList();				//实参表达式列表
 	void Compound_Statement();          //复合语句
 	void Statement();					//语句
