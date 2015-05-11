@@ -8,6 +8,8 @@ using namespace std;
 void Parser::Parsering(queue<Token> Queue)
 {
 	Token token;
+	Symbol_System::Symbol_SystemInstance().SymbolTreeRoot->Child = new SymbolTable_Node;
+	Symbol_System::Symbol_SystemInstance().SymbolPointer = Symbol_System::Symbol_SystemInstance().SymbolTreeRoot->Child; //将符号表系统的实时节点赋值为根节点的子结点
 	while (Lexer::Lexer_Instance().Lexer_Read() != StopEOF)
 	{
 		External_Dec(Global);
@@ -61,8 +63,11 @@ bool Parser::Declaration_Legal(Token token)
 	else
 		return false;
 }
+//是否为数据类型
+bool Parser::Is_DataType(Token token)
+{
 
-
+}
 //解析声明 ，功能：声明与函数定义
 void Parser::External_Dec(External state)
 {
@@ -84,19 +89,44 @@ void Parser::External_Dec(External state)
 	while (1) //逐个分析声明或函数定义
 	{
 		Declarator(symboldata); //声明标识符
+		if (state == Global)//全局定义或声明
+		{
+			if (Symbol_System::Symbol_SystemInstance().SymbolPointer==NULL)  //加入到符号表系统的树形结构中
+			{
+				SymbolTable_Node symbol_node;
+				symbol_node.SymbolData = symboldata;
+				symbol_node.Child = NULL;
+				symbol_node.Root = Symbol_System::Symbol_SystemInstance().SymbolPointer->Root;
+				Symbol_System::Symbol_SystemInstance().SymbolPointer = &symbol_node;
+				Symbol_System::Symbol_SystemInstance().SymbolPointer->SymbolData.Link = new SymbolTable_Node;
+				Symbol_System::Symbol_SystemInstance().SymbolPointer->SymbolData.Link = NULL;
+				Symbol_System::Symbol_SystemInstance().SymbolPointer = Symbol_System::Symbol_SystemInstance().SymbolPointer->SymbolData.Link;
+			}
+		}
+		else //嵌套声明或定义，state=Local
+		{
+			if (Symbol_System::Symbol_SystemInstance().SymbolPointer==NULL)
+			{
+				SymbolTable_Node symbol_node;
+				symbol_node.SymbolData = symboldata;
+				symbol_node.Child = NULL;
+				symbol_node.Root = Symbol_System::Symbol_SystemInstance().SymbolPointer->Root;
+				Symbol_System::Symbol_SystemInstance().SymbolPointer->Child = new SymbolTable_Node;
+				Symbol_System::Symbol_SystemInstance().SymbolPointer->Child=&symbol_node;
+				Symbol_System::Symbol_SystemInstance().SymbolPointer->Child->SymbolData.Link = new SymbolTable_Node;
+				Symbol_System::Symbol_SystemInstance().SymbolPointer->Child->SymbolData.Link = NULL;
+				Symbol_System::Symbol_SystemInstance().SymbolPointer = Symbol_System::Symbol_SystemInstance().SymbolPointer->Child->SymbolData.Link;
+			}
+		}
 		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "{") // 函数定义
 		{
-			if (state == Local)
+			if (state == Local) //函数嵌套函数，即非法
 			{
 				Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Dec", "declaration", "not support function nest");
 				error.ThrowError();
 			}
 			Funbody();//函数体
 			break;
-		}
-		else if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ";") //声明结束
-		{
-			
 		}
 		else //定义变量
 		{
@@ -269,9 +299,10 @@ void Parser::Funbody()
 //复合语句
 void Parser::Compound_Statement()
 {
-	while (!Type_Sign()) 
+	Symbol symboldata;
+	while (Is_DataType(Lexer::Lexer_Instance().Lexer_Peek(0))) 
 	{
-		Parser::Parser_Instance().External_Dec(Local);//内部声明 或 定义
+		External_Dec(Local);//内部声明 或 定义
 	}
 	while (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() != "}")
 	{

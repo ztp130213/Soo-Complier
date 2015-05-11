@@ -19,6 +19,7 @@ public:
 	bool Type_Sign(Symbol & symboldata);//判断是否为类型符号
 	void Declarator(Symbol & symboldata);//声明符
 	void Funbody();						//函数体
+	bool Is_DataType(Token token);		//当token 为数据类型
 	bool Is_Keyword(Token token);		//声明符是否为关键字
 	bool D_Legal(Token token);			//字符序列是否合法
 	bool Declaration_Legal(Token token);//声明符合法判断

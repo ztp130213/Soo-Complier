@@ -10,12 +10,12 @@ void Symbol_System::Symbol_CreateTree()
 	this->SymbolTreeRoot->Root = NULL;
 }
 //将符号加入树形结构符号表系统
-void Symbol_System::Symbol_Add(string symbolname, TypeCode type, Data_Type dtype)
+void Symbol_System::Symbol_Add(Symbol symboldata,External state)
 {
 	SymbolTable_Node *symbolnode;
-	symbolnode->SymbolData.Name = symbolname;
-	symbolnode->SymbolData.Type = type;
-	symbolnode->SymbolData.DType = dtype;
+	symbolnode->SymbolData.Name = symboldata.Name;
+	symbolnode->SymbolData.Type = symboldata.Type;
+	symbolnode->SymbolData.DType = symboldata.DType;
 	if (this->SymbolPointer->Child == NULL)
 	{
 		this->SymbolPointer->Child = symbolnode;
