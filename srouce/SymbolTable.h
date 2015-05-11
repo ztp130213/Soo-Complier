@@ -63,7 +63,7 @@ public:
 	static SymbolTable_Node * SymbolPointer;//进行词法分析时符号表的实时指针
 	SymbolTable_Node * SymbolTreeRoot;					//符号表的树结构根节点
 	void Symbol_CreateTree();							//构建符号表系统树形结构
-	void Symbol_Add(string name, TypeCode type,Data_Type dtype);//将符号加入树形结构符号表系统
+	void Symbol_Add(Symbol Symbol_node);//将符号加入树形结构符号表系统
 	void Symbol_Delete(string symbolname, TypeCode type, Data_Type dtype);//将符号从树形结构符号表系统删除
 	Symbol *Symbol_Search(int number);		//标识符查找，并返回查找到的符号节点，如果不存在返回NULL
 

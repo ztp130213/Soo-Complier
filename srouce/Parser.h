@@ -28,7 +28,7 @@ public:
 	void Struct_DeclarationList(Symbol & symboldata);//结构声明符表
 	void Struct_Declaration(Symbol & symboldata);	 //结构体声明
 	Symbol* Struct_Search(Token token);	//结构体定义查找
-	void ParameterList(Symbol_Function & symbol_funciton);//形式参数列表
+	void Func_ParameterList(Symbol_Function & symbol_funciton);//形式参数列表
 	void ArgumentList();				//实参表达式列表
 	void Compound_Statement();          //复合语句
 	void Statement();					//语句

@@ -74,6 +74,8 @@ void Parser::External_Dec(External state)
 		Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Type", "declaration", "no such type");
 		error.ThrowError();
 	}
+	if (symboldata.DType == T_Struct)
+		Symbol_System::Symbol_SystemInstance().Symbol_Add(symboldata); //如果是结构即已经判断完毕，直接加入符号表的树形结构
 	if (symboldata.Type==T_Struct&& Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ";")
 	{
 		Lexer::Lexer_Instance().Lexer_Read();
@@ -92,7 +94,11 @@ void Parser::External_Dec(External state)
 			Funbody();//函数体
 			break;
 		}
-		else
+		else if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == ";") //声明结束
+		{
+			
+		}
+		else //定义变量
 		{
 			if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "=")
 			{
@@ -213,29 +219,39 @@ void Parser::Declarator_Postfix(Symbol & symboldata)
 	{
 		Lexer::Lexer_Instance().Lexer_Read(); //读取”（“
 		Symbol_Function  symbol_function;
-		ParameterList(symbol_function); //函数参数列表解析
+		Func_ParameterList(symbol_function); //函数参数列表解析
+		symboldata.Symbol_function = &symbol_function;
 	}
 	else if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() == "[") //数组
 	{
+		int Length;
 		Lexer::Lexer_Instance().Lexer_Read(); //读取"["
 		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_IsNumber())
 		{
-			Lexer::Lexer_Instance().Lexer_Read(); //读取 数组大小
+			Length=Lexer::Lexer_Instance().Lexer_Read().Token_GetNumber(); //读取 数组大小
 		}
 		Token_Judge("]", "Declarator_Postfix", "Array", "need input a ']'");
+		Symbol_Array symbol_array;
+		symbol_array.Length = Length;
+		symboldata.Symbol_array = &symbol_array;
 	}
 }
 //函数参数列表解析
-void Parser::ParameterList(Symbol_Function &symbol_funciton)
+void Parser::Func_ParameterList(Symbol_Function &symbol_funciton)
 {
 	while (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText() != ")")
 	{
-		if (!Type_Sign())
+		Symbol Func_Parameter;//函数参数
+		if (!Type_Sign(Func_Parameter))
 		{
 			Error error(Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetLinenumber, "Ident", "declaration", "no such type");
 			error.ThrowError();
 		}
-		Declarator(); //确定 标识符
+		Declarator(Func_Parameter); //确定 标识符
+		Symbol_FuncParam symbol_funcparam;
+		symbol_funcparam.name = Func_Parameter.Name;
+		symbol_funcparam.type = Func_Parameter.DType;
+		symbol_funciton.Func_ParamList.push_back(symbol_funcparam);
 		if (Lexer::Lexer_Instance().Lexer_Peek(0).Token_GetText == ",")
 		{
 			Lexer::Lexer_Instance().Lexer_Read();//读取”=“
