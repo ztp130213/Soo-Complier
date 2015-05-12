@@ -6,31 +6,40 @@ void Symbol_System::Symbol_CreateTree()
 {
 
 	this->SymbolTreeRoot->SymbolData.Name = "SymbolSystem_Root";
+	this->SymbolTreeRoot->Child = new SymbolTable_Node;
 	this->SymbolTreeRoot->Child = NULL;
 	this->SymbolTreeRoot->Root = NULL;
+	this->SymbolPointer = this->SymbolTreeRoot->Child;
 }
 //将符号加入树形结构符号表系统
 void Symbol_System::Symbol_Add(Symbol symboldata,External state)
 {
-	SymbolTable_Node *symbolnode;
-	symbolnode->SymbolData.Name = symboldata.Name;
-	symbolnode->SymbolData.Type = symboldata.Type;
-	symbolnode->SymbolData.DType = symboldata.DType;
-	if (this->SymbolPointer->Child == NULL)
+	if (state == Global) //全局变量
 	{
-		this->SymbolPointer->Child = symbolnode;
-		symbolnode->Root = this->SymbolPointer;
-	}
-	else
-	{
-		SymbolTable_Node Pointer = *this->SymbolPointer;
-		while (this->SymbolPointer->Child->SymbolData.Link != NULL)
+		SymbolTable_Node *symbolnode;
+		symbolnode->SymbolData.Name = symboldata.Name;
+		symbolnode->SymbolData.Type = symboldata.Type;
+		symbolnode->SymbolData.DType = symboldata.DType;
+		if (this->SymbolPointer->Child == NULL)
 		{
-			this->SymbolPointer = this->SymbolPointer->Child->SymbolData.Link;
+			this->SymbolPointer->Child = symbolnode;
+			symbolnode->Root = this->SymbolPointer;
 		}
-		symbolnode->Root = &Pointer;
-		this->SymbolPointer->SymbolData.Link = symbolnode;
-		this->SymbolPointer = &Pointer; //还原实时指针
+		else
+		{
+			SymbolTable_Node Pointer = *this->SymbolPointer;
+			while (this->SymbolPointer->Child->SymbolData.Link != NULL)
+			{
+				this->SymbolPointer = this->SymbolPointer->Child->SymbolData.Link;
+			}
+			symbolnode->Root = &Pointer;
+			this->SymbolPointer->SymbolData.Link = symbolnode;
+			this->SymbolPointer = &Pointer; //还原实时指针
+		}
+	}
+	else //局部变量
+	{
+
 	}
 }
 //将符号从树形结构符号表系统删除
