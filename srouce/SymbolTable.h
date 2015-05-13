@@ -65,14 +65,14 @@ public:
 	void Symbol_CreateTree();							//构建符号表系统树形结构
 	void Symbol_Add(Symbol Symboldata,External state);	//将符号加入树形结构符号表系统
 	void Symbol_Delete(string symbolname, TypeCode type, Data_Type dtype);//将符号从树形结构符号表系统删除
-	Symbol *Symbol_Search(int number);		//标识符查找，并返回查找到的符号节点，如果不存在返回NULL
+	SymbolTable_Node* Symbol_Search(string symbolname, TypeCode type, Data_Type dtype);//符号表中的标识符查找,遍历符号表树形结构
 
 };
 //符号系统的实例化
 Symbol_System & Symbol_System::Symbol_SystemInstance()
 {
-	Symbol_System sybol;
-	return sybol;
+	Symbol_System symbol;
+	return symbol;
 }
 
 #endif 

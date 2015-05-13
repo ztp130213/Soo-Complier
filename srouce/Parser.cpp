@@ -8,8 +8,7 @@ using namespace std;
 void Parser::Parsering(queue<Token> Queue)
 {
 	Token token;
-	Symbol_System::Symbol_SystemInstance().SymbolTreeRoot->Child = new SymbolTable_Node;
-	Symbol_System::Symbol_SystemInstance().SymbolPointer = Symbol_System::Symbol_SystemInstance().SymbolTreeRoot->Child; //将符号表系统的实时节点赋值为根节点的子结点
+	Symbol_System::Symbol_SystemInstance().Symbol_CreateTree();//构建符号表系统树形结构,即创建根结点
 	while (Lexer::Lexer_Instance().Lexer_Read() != StopEOF)
 	{
 		External_Dec(Global);
@@ -80,8 +79,6 @@ bool Parser::Is_DataType(Token token)
 //解析声明 ，功能：声明与函数定义
 void Parser::External_Dec(External state)
 {
-	Symbol_System::Symbol_SystemInstance().Symbol_CreateTree();//构建符号表系统树形结构,即创建根结点
-	Symbol_System::Symbol_SystemInstance().SymbolPointer = Symbol_System::Symbol_SystemInstance().SymbolTreeRoot;//将根结点赋给实时结点
 	Symbol symboldata;
 	if (!Type_Sign(symboldata)) //类型判断
 	{

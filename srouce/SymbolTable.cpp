@@ -69,3 +69,24 @@ void Symbol_System::Symbol_Delete(string symbolname, TypeCode type, Data_Type dt
 {
 
 }
+
+//符号表中的标识符查找
+SymbolTable_Node* Symbol_System::Symbol_Search(string symbolname,TypeCode type,Data_Type dtype)
+{
+	SymbolTable_Node * ErgodicPointer = new SymbolTable_Node;
+	ErgodicPointer=SymbolTreeRoot->Child;
+	while (ErgodicPointer != NULL)
+	{
+		if (ErgodicPointer->SymbolData.Name == symbolname&&ErgodicPointer->SymbolData.Type == type&&ErgodicPointer->SymbolData.DType == dtype)
+			return ErgodicPointer;
+		SymbolTable_Node * ErgodicChildPointer = new SymbolTable_Node;
+		ErgodicChildPointer=ErgodicPointer->Child;
+		while (ErgodicChildPointer != NULL)
+		{
+			if (ErgodicPointer->SymbolData.Name == symbolname&&ErgodicPointer->SymbolData.Type == type&&ErgodicPointer->SymbolData.DType == dtype)
+				return ErgodicChildPointer;
+			ErgodicChildPointer = ErgodicChildPointer->SymbolData.Link;
+		}
+		ErgodicPointer = ErgodicPointer->SymbolData.Link;
+	}
+}
